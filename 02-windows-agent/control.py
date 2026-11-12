@@ -36,6 +36,34 @@ while workload.poll() is None:
             except psutil.NoSuchProcess:
                 pass
         print("--> prioritet snizen")
+        
+    if t == 9:
+        for p in svi:
+            try:
+                p.suspend()
+            except psutil.NoSuchProcess:
+                pass
+        print("--> suspend")
+        
+    if t == 12:
+        for p in svi:
+            try:
+                p.resume()
+            except psutil.NoSuchProcess:
+                pass
+        print("--> resume")
+        
+    if t == 15:
+        for p in svi:
+            try:
+                p.terminate()
+            except psutil.NoSuchProcess:
+                pass
+        ugaseni, zivi = psutil.wait_procs(svi, timeout=3)
+        for p in zivi:
+            p.kill()
+        print(f"--> workload ugasen ({len(ugaseni)} uredno, {len(zivi)} silom)")
+        break
     
     cpu = 0.0
     memorija = 0
