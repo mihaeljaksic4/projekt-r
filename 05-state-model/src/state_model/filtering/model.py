@@ -1,5 +1,4 @@
 from __future__ import annotations
-from collections import deque
 from datetime import datetime
 from pathlib import Path
 
@@ -7,6 +6,7 @@ import numpy as np
 
 from .artifact import ModelArtifact
 from .numerics import gaussian_logpdf, logsumexp
+from .fsm import GuardedFSM, guard_features
 
 
 MEASUREMENTS = ("cpu_usage", "gpu_usage", "cpu_temp", "gpu_temp", "fan_rpm")
@@ -34,10 +34,7 @@ class StateModel:
         self._posterior = self.artifact.pi.copy()
         self._initialized = False
         self._last_timestamp = None
-        self._state = None
-        self._previous_state = None
-        self._seconds_in_state = 0.0
-        self._history = deque(maxlen=32)
+        self._fsm = GuardedFSM(self.artifact.states, self.artifact.mask)
 
     @property
     def posterior(self) -> np.ndarray:
@@ -61,18 +58,6 @@ class StateModel:
         log_posterior = log_prior + log_likelihood
         log_posterior -= logsumexp(log_posterior)
         self._posterior = np.exp(log_posterior)
-
-        state = self.artifact.states[int(self._posterior.argmax())]
-        if state != self._state:
-            if self._state is not None:
-                self._previous_state = self._state
-                self._history.append(
-                    {"timestamp": timestamp, "from": self._state, "to": state}
-                )
-            self._state = state
-            self._seconds_in_state = 0.0
-        else:
-            self._seconds_in_state += steps * self.artifact.cadence_seconds
 
     def update(self, packet: dict) -> dict:
         now = _time_seconds(packet["timestamp"])
@@ -117,15 +102,18 @@ class StateModel:
         latest = np.r_[sequence[-1, indices], latest_slopes]
         self._step(latest, steps=steps, timestamp=now)
         self._last_timestamp = now
+        hmm_state = self.artifact.states[int(self._posterior.argmax())]
+        self._fsm.update(hmm_state, guard_features(columns, sequence, derived), now)
         return {
             "timestamp": packet["timestamp"],
-            "current_state": self._state,
-            "previous_state": self._previous_state,
-            "time_in_state": round(self._seconds_in_state, 3),
+            "current_state": self._fsm.state,
+            "hmm_state": hmm_state,
+            "previous_state": self._fsm.previous_state,
+            "time_in_state": round(self._fsm.time_in_state(now), 3),
             "state_probabilities": dict(
                 zip(self.artifact.states, self._posterior.tolist())
             ),
-            "transition_history": list(self._history),
+            "transition_history": list(self._fsm.history),
             "observed_features": int(np.isfinite(latest).sum()),
         }
 

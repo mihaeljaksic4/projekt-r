@@ -2,9 +2,9 @@
 
 A single `uv` project for six-state operational state estimation:
 
-- `filtering`: online Gaussian HMM inference (production).
+- `filtering`: online Gaussian HMM filtering and deterministic transition guards (production).
 - `training`: offline masked Baum–Welch parameter estimation and fixed transition topology.
-- `analysis`: data quality, state interpretation, Viterbi decoding, Matplotlib plots, and SageMath diagnostics.
+- `analysis`: state interpretation, Matplotlib plots, and SageMath diagnostics.
 
 The model's six labels are `IDLE`, `LOAD_RISING`, `SUSTAINED_LOAD`, `THERMAL_RESPONSE`, `THERMAL_STEADY`, and `COOLING`.
 
@@ -16,7 +16,7 @@ Requires Python 3.11+ , uv and SageMath. From the project directory:
 uv sync
 ```
 
-The `analysis` dependency group (Matplotlib and pytest) is installed by default. For a minimal production environment, use `uv sync --no-default-groups`.
+The `analysis` group (Matplotlib) is installed by default. For a minimal production environment, use `uv sync --no-default-groups`.
 
 ## Train and inspect
 
@@ -53,7 +53,7 @@ def on_pipeline_packet(packet: dict) -> dict:
     # Called once per second by the Time-Series Pipeline.
     result = model.update(packet)
     return {
-        "current_state": result["current_state"],
+        "current_state": result["current_state"],  # HMM candidate gated by FSM
         "previous_state": result["previous_state"],
         "time_in_state": result["time_in_state"],
         "state_probabilities": result["state_probabilities"],
@@ -88,10 +88,3 @@ packet = {
 
 Here `window` is the actual 30×7 sequence delivered by the pipeline. The filter uses `cpu_usage`, `gpu_usage`, `cpu_temp`, `gpu_temp`, `fan_rpm`, and the four derived slopes. 
 
-The output also supports an unconditional state forecast:
-
-```python
-probabilities_in_30_seconds = model.forecast_state_probabilities(30)
-```
-
-This is a Markov-chain forecast, **not** a predicted future temperature or a complete controlled-system forecast.

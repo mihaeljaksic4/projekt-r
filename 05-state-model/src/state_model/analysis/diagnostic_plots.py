@@ -9,7 +9,7 @@ from matplotlib.patches import Patch
 import numpy as np
 
 from state_model.training.data import TelemetryData
-from .plots import PURPLES, INK, theme, save
+from .plots import COLORS, PALETTE, POSTER_CMAP, PURPLES, INK, theme, save, workloads
 
 
 FEATURE_NAMES = (
@@ -87,13 +87,16 @@ def interpretation_plots(
         (axes[1], ("cpu_temp_c", "gpu_temp_c"), "Temperature", "°C"),
         (axes[2], ("cpu_fan_rpm", "gpu_fan_rpm"), "Fan speed", "RPM"),
     ):
+        workloads(ax, data)
         for j, field in enumerate(fields):
-            ax.plot(
+            draw = ax.step if "temp" in field else ax.plot
+            draw(
                 t,
                 data.columns[field],
-                color=PURPLES[1 + 3 * j],
+                color=COLORS[j],
                 lw=1.3,
                 label="CPU" if j == 0 else "GPU",
+                **({"where": "post"} if "temp" in field else {}),
             )
         ax.set(ylabel=unit)
         ax.set_title(name, loc="left", fontsize=11)
@@ -106,9 +109,7 @@ def interpretation_plots(
     ):
         categories = list(dict.fromkeys(values))
         codes = np.array([categories.index(value) for value in values])
-        colors = plt.cm.Purples(np.linspace(0.18, 0.90, max(len(categories), 2)))[
-            : len(categories)
-        ]
+        colors = [COLORS[i % len(COLORS)] for i in range(len(categories))]
         ax.imshow(
             codes[None, :],
             aspect="auto",
@@ -132,19 +133,35 @@ def interpretation_plots(
         )
         ax.grid(False)
 
-    axes[5].step(t, labels, where="post", lw=1.25, color=PURPLES[2])
+    changes = np.r_[0, np.flatnonzero(np.diff(labels) != 0) + 1, len(labels)]
+    for start, stop in zip(changes[:-1], changes[1:]):
+        index = int(labels[start])
+        right = t[stop] if stop < len(t) else t[-1] + 1 / 60
+        axes[5].hlines(index, t[start], right, color=COLORS[index], lw=3.0)
+        if stop < len(t):
+            axes[5].plot(
+                [t[stop], t[stop]],
+                [index, int(labels[stop])],
+                color=PALETTE["muted"],
+                lw=0.8,
+                alpha=0.55,
+            )
     axes[5].set(
         yticks=range(len(states)),
         yticklabels=[name.replace("_", " ") for name in states],
         xlabel="Elapsed time (minutes)",
-        ylabel="Online MAP",
+        ylabel="Guarded state",
     )
-    axes[5].grid(alpha=0.35)
+    axes[5].set_title(
+        "Reported operational state (HMM + FSM guards)", loc="left", fontsize=11
+    )
+    axes[5].grid(axis="y", alpha=0.35)
+
     written.append(save(fig, out, "11_state_interpretation_timeline.png"))
 
     fig, axes = plt.subplots(2, 2, figsize=(14, 9), layout="constrained")
     fig.suptitle(
-        "State labels vs recorded context  |  associations, not ground truth",
+        "Guarded state vs recorded context  |  associations, not ground truth",
         fontsize=16,
         weight="bold",
     )
@@ -157,7 +174,7 @@ def interpretation_plots(
             info["category_given_state"],
             info["categories"],
             states,
-            f"P({title.lower()} | inferred state)",
+            f"P({title.lower()} | guarded state)",
             max_value=1.0,
         )
         _heatmap(
@@ -165,7 +182,7 @@ def interpretation_plots(
             info["state_given_category"],
             info["categories"],
             states,
-            f"P(inferred state | {title.lower()})",
+            f"P(guarded state | {title.lower()})",
             max_value=1.0,
         )
     written.append(save(fig, out, "12_state_context.png"))
@@ -260,69 +277,90 @@ def interpretation_plots(
 def dynamics_plots(
     states: tuple[str, ...],
     mask: np.ndarray,
+    guarded_report: dict,
     map_report: dict,
     viterbi_report: dict,
     out: Path,
 ) -> list[Path]:
     theme()
-    written = []
-    fig, axes = plt.subplots(1, 2, figsize=(13.5, 6), layout="constrained")
-    fig.text(
-        0.5,
-        0.015,
-        "! marks a reported MAP switch forbidden by the latent-state transition mask",
-        ha="center",
-        fontsize=9,
-        color="#78618A",
+    reports = (
+        (guarded_report, "Guarded HMM"),
+        (map_report, "Raw MAP (comparison)"),
+        (viterbi_report, "Viterbi (comparison)"),
     )
-    for ax, report, title in (
-        (axes[0], map_report, "Online MAP"),
-        (axes[1], viterbi_report, "Offline Viterbi"),
-    ):
-        counts = np.array(report["observed_state_changes"], dtype=int)
+
+    fig, axes = plt.subplots(1, 3, figsize=(18, 6.6), layout="constrained")
+    maximum = max(1, *(int(np.max(r["observed_state_changes"])) for r, _ in reports))
+    for ax, (report, title) in zip(axes, reports):
+        counts = np.asarray(report["observed_state_changes"], dtype=int)
         image = ax.imshow(
             np.ma.masked_where(np.eye(len(states), dtype=bool), counts),
-            cmap="Purples",
+            cmap=POSTER_CMAP,
             vmin=0,
-            vmax=max(1, int(counts.max())),
+            vmax=maximum,
         )
         ax.set(
             xticks=range(len(states)),
             yticks=range(len(states)),
-            xticklabels=[s.replace("_", "\n") for s in states],
-            yticklabels=[s.replace("_", " ") for s in states],
+            xticklabels=[name.replace("_", "\n") for name in states],
+            yticklabels=[name.replace("_", " ") for name in states],
             xlabel="To",
             ylabel="From",
         )
         ax.set_title(
-            f"{title}: {report['state_change_count']} observed switches", loc="left"
+            f"{title}: {report['state_change_count']} switches", loc="left", fontsize=12
         )
         ax.tick_params(labelsize=8)
         for i in range(len(states)):
             for j in range(len(states)):
                 if i == j:
-                    ax.text(j, i, "—", ha="center", va="center", color="#91849C")
+                    value = "—"
+                elif counts[i, j] and not mask[i, j]:
+                    value = f"{counts[i, j]}!"
+                elif not mask[i, j]:
+                    value = "×"
                 else:
-                    count = int(counts[i, j])
-                    warning = "!" if count and not mask[i, j] else ""
-                    ax.text(
-                        j,
-                        i,
-                        f"{count}{warning}",
-                        ha="center",
-                        va="center",
-                        fontsize=9,
-                        color="white" if count > image.norm.vmax * 0.67 else INK,
-                    )
+                    value = str(counts[i, j])
+                ax.text(
+                    j,
+                    i,
+                    value,
+                    ha="center",
+                    va="center",
+                    fontsize=9,
+                    color="white" if counts[i, j] > maximum * 0.67 else INK,
+                )
         ax.grid(False)
-    written.append(save(fig, out, "14_observed_transitions.png"))
+    fig.colorbar(image, ax=axes, shrink=0.72, label="Observed direct switches")
+    fig.suptitle(
+        "State transitions | guarded output and decoding comparisons", fontsize=16
+    )
+    fig.text(
+        0.5,
+        0.01,
+        "× forbidden edge    ! observed switch forbidden by HMM mask (raw MAP only)",
+        ha="center",
+        fontsize=9,
+        color=PALETTE["muted"],
+    )
+    first = save(fig, out, "14_observed_transitions.png")
 
-    fig, axes = plt.subplots(1, 2, figsize=(14, 6.5), sharey=True)
-    fig.subplots_adjust(left=0.18, right=0.98, top=0.85, bottom=0.19, wspace=0.045)
-    for ax, report, title in (
-        (axes[0], map_report, "Online MAP"),
-        (axes[1], viterbi_report, "Offline Viterbi"),
-    ):
+    fig, axes = plt.subplots(1, 3, figsize=(18, 6.5), sharey=True, sharex=True)
+    fig.subplots_adjust(left=0.13, right=0.985, top=0.87, bottom=0.19, wspace=0.08)
+    durations = [
+        float(run["seconds"])
+        for report, _ in reports
+        for run in report["runs"]
+        if run["completed"]
+    ]
+    durations += [
+        float(report["dwell"][state]["hmm_expected_seconds"])
+        for report, _ in reports
+        for state in states
+        if report["dwell"][state]["hmm_expected_seconds"] is not None
+    ]
+    duration_limits = (max(0.1, min(durations) / 1.5), max(durations) * 1.5)
+    for ax, (report, title) in zip(axes, reports):
         for i, state in enumerate(states):
             complete = [
                 float(r["seconds"])
@@ -331,13 +369,13 @@ def dynamics_plots(
             ]
             expected = report["dwell"][state]["hmm_expected_seconds"]
             if complete:
-                offsets = np.linspace(-0.15, 0.15, len(complete))
+                offsets = np.linspace(-0.14, 0.14, len(complete))
                 ax.scatter(
                     complete,
                     i + offsets,
                     s=27,
-                    alpha=0.55,
-                    color=PURPLES[i],
+                    alpha=0.65,
+                    color=COLORS[i],
                     edgecolors="none",
                     zorder=3,
                 )
@@ -346,7 +384,7 @@ def dynamics_plots(
                     [i],
                     s=75,
                     marker="D",
-                    color=PURPLES[i],
+                    color=COLORS[i],
                     edgecolors="white",
                     linewidths=0.7,
                     zorder=4,
@@ -357,30 +395,87 @@ def dynamics_plots(
                 )
             ax.text(
                 0.98,
-                i,
+                i + 0.28,
                 f"n={len(complete)}",
                 ha="right",
                 va="center",
                 transform=ax.get_yaxis_transform(),
                 fontsize=8,
-                color="#685477",
+                color=PALETTE["muted"],
             )
         ax.set(
             xscale="log",
-            xlabel="Run duration (seconds, log scale)",
+            xlim=duration_limits,
+            xlabel="Duration (s, log scale)",
             yticks=range(len(states)),
             yticklabels=[state.replace("_", " ") for state in states],
         )
-        ax.set_title(title, loc="left")
+        ax.set_title(title, loc="left", fontsize=12)
         ax.grid(axis="x")
     axes[0].invert_yaxis()
+    for ax in axes[1:]:
+        ax.tick_params(labelleft=False)
+    fig.suptitle("Observed state residence times | guarded output first", fontsize=16)
     fig.text(
         0.5,
-        0.035,
-        "Dots: completed runs     ◆: observed mean     |: HMM expected dwell     n: completed-run count",
+        0.04,
+        "Dots: complete runs    ◆: empirical mean    |: HMM expected dwell    n: complete-run count",
         ha="center",
         fontsize=9,
-        color="#78618A",
+        color=PALETTE["muted"],
     )
-    written.append(save(fig, out, "15_observed_dwell.png"))
-    return written
+    second = save(fig, out, "15_observed_dwell.png")
+    return [first, second]
+
+
+def guarded_state_plot(
+    data: TelemetryData,
+    posterior: np.ndarray,
+    viterbi: np.ndarray,
+    guarded: np.ndarray,
+    states: tuple[str, ...],
+    out: Path,
+) -> Path:
+    """Compare hard labels from the same telemetry without conflating the posterior."""
+    theme()
+    t = data.seconds / 60
+    fig, axes = plt.subplots(
+        2, 1, figsize=(14, 7), sharex=True, height_ratios=[3, 1], layout="constrained"
+    )
+    for values, label, color, offset in (
+        (posterior.argmax(axis=1), "HMM MAP", PURPLES[0], -0.10),
+        (guarded, "HMM + FSM guards", PURPLES[1], 0),
+        (viterbi, "Offline Viterbi", PURPLES[5], 0.10),
+    ):
+        axes[0].step(
+            t,
+            values + offset,
+            where="post",
+            lw=1.25,
+            color=color,
+            label=label,
+            alpha=0.90,
+        )
+    axes[0].set(
+        yticks=range(len(states)),
+        yticklabels=[s.replace("_", " ") for s in states],
+        ylabel="Reported state",
+    )
+    axes[0].legend(frameon=False, ncol=2, fontsize=9)
+    axes[0].grid(axis="y", alpha=0.35)
+    different = guarded != posterior.argmax(axis=1)
+    axes[1].fill_between(
+        t, different.astype(float), step="post", color=PURPLES[2], alpha=0.55
+    )
+    axes[1].set(
+        ylim=(0, 1.1),
+        yticks=[0, 1],
+        yticklabels=["same", "different"],
+        xlabel="Elapsed time (minutes)",
+        ylabel="FSM vs MAP",
+    )
+    axes[1].grid(axis="y")
+    fig.suptitle(
+        "HMM posterior → guarded operational state", fontsize=17, weight="bold"
+    )
+    return save(fig, out, "20_guarded_fsm_timeline.png")

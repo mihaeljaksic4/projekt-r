@@ -12,6 +12,8 @@ def analyze_with_sage(model: ModelArtifact) -> dict:
         "transitions": model.transitions.tolist(),
         "means": model.means.tolist(),
         "variances": model.variances.tolist(),
+        "feature_names": model.feature_names,
+        "cadence_seconds": model.cadence_seconds,
     }
     worker = Path(__file__).with_name("sage_worker.py")
     try:

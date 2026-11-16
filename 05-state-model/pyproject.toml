@@ -4,12 +4,12 @@ build-backend = "hatchling.build"
 
 [project]
 name = "state_model"
-version = "0.2.0"
+version = "0.3.0"
 requires-python = ">=3.11"
 dependencies = ["numpy>=1.26"]
 
 [dependency-groups]
-analysis = ["matplotlib>=3.8", "pytest>=8"]
+analysis = ["matplotlib>=3.8"]
 
 [tool.uv]
 default-groups = ["analysis"]
@@ -21,5 +21,3 @@ hmm-analyze = "state_model.analysis.cli:main"
 [tool.hatch.build.targets.wheel]
 packages = ["src/state_model"]
 
-[tool.pytest.ini_options]
-testpaths = ["tests"]

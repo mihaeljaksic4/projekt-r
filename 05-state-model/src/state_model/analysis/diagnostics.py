@@ -109,23 +109,37 @@ def describe_dynamics(
     counts = np.zeros((count, count), dtype=int)
     np.add.at(counts, (from_states, to_states), 1)
 
+    # Bridge at most two missing seconds when both observed endpoints agree.
+    # This estimates a continuous run; it does not invent observed transitions.
     runs = []
     i = 0
     while i < len(labels):
         if not valid[i]:
             i += 1
             continue
-        start = i
+        start = end = i
         state = int(labels[i])
-        i += 1
-        while (
-            i < len(labels)
-            and valid[i]
-            and labels[i] == state
-            and np.isclose(times[i] - times[i - 1], cadence_seconds)
-        ):
-            i += 1
-        end = i - 1
+        bridged = 0
+        while True:
+            next_valid = end + 1
+            while (
+                next_valid < len(labels)
+                and not valid[next_valid]
+                and next_valid - end <= 2
+            ):
+                next_valid += 1
+            if (
+                next_valid >= len(labels)
+                or not valid[next_valid]
+                or labels[next_valid] != state
+                or next_valid - end - 1 > 2
+                or not np.isclose(
+                    times[next_valid] - times[end], (next_valid - end) * cadence_seconds
+                )
+            ):
+                break
+            bridged += next_valid - end - 1
+            end = next_valid
         left = (
             start == 0
             or not valid[start - 1]
@@ -142,11 +156,13 @@ def describe_dynamics(
                 "start": data.timestamps[start].isoformat(),
                 "end": data.timestamps[end].isoformat(),
                 "seconds": float(times[end] - times[start] + cadence_seconds),
+                "bridged_missing_seconds": int(bridged),
                 "completed": not (left or right),
                 "left_censored": bool(left),
                 "right_censored": bool(right),
             }
         )
+        i = end + 1
 
     durations = {}
     for state, name in enumerate(states):
@@ -189,5 +205,6 @@ def describe_dynamics(
         "state_change_count": int(switches.sum()),
         "forbidden_map_changes": int(forbidden.sum()),
         "runs": runs,
+        "bridged_missing_seconds": int(sum(r["bridged_missing_seconds"] for r in runs)),
         "dwell": durations,
     }

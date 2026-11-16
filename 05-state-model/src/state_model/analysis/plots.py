@@ -291,7 +291,7 @@ def model_plots(
             ax.text(
                 j,
                 i,
-                f"{v:.2f}" if model.mask[i, j] else "×",
+                (f"{v:.4f}" if v >= 0.0001 else "<.0001") if model.mask[i, j] else "×",
                 ha="center",
                 va="center",
                 color="white" if v > 0.55 else INK,
@@ -335,7 +335,7 @@ def model_plots(
 
     fig = plt.figure(figsize=(15, 9), layout="constrained")
     fig.suptitle(
-        "Individual state emissions | 2D marginals of 9D Gaussians",
+        "Individual state emissions | 2D marginals; independent density scales",
         fontsize=17,
         weight="bold",
     )
@@ -406,36 +406,386 @@ def model_plots(
     written.append(save(fig, out, "08_stationary_and_dwell.png"))
 
     eig = [complex(z["real"], z["imag"]) for z in chain["eigenvalues"]]
-    fig, ax = plt.subplots(figsize=(6.5, 6.2), layout="constrained")
-    circle = plt.Circle((0, 0), 1.0, color=PALE, fill=False, ls="--", lw=1.5)
-    ax.add_patch(circle)
-    ax.scatter(
-        [z.real for z in eig],
-        [z.imag for z in eig],
-        s=85,
-        c=PURPLES,
-        edgecolors="white",
-        linewidths=1.2,
-        zorder=3,
+    fig, (full, zoom) = plt.subplots(1, 2, figsize=(12, 5.5), layout="constrained")
+    full.add_patch(plt.Circle((0, 0), 1.0, color=PALE, fill=False, ls="--", lw=1.5))
+    for ax in (full, zoom):
+        for index, value in enumerate(eig):
+            ax.scatter(
+                value.real,
+                value.imag,
+                s=85,
+                color=PURPLES[index],
+                edgecolors="white",
+                linewidths=1.0,
+                zorder=4,
+            )
+        ax.axhline(0, color=PALETTE["grid"], lw=1)
+        ax.axvline(0, color=PALETTE["grid"], lw=1)
+        ax.set(xlabel="Real part", ylabel="Imaginary part")
+        ax.grid()
+    full.set(xlim=(-1.08, 1.08), ylim=(-1.08, 1.08))
+    full.set_aspect("equal")
+    full.set_title("Unit circle and spectrum")
+    real = np.array([v.real for v in eig])
+    imaginary = np.array([v.imag for v in eig])
+    margin_x = max(0.003, float(np.ptp(real)) * 0.10)
+    margin_y = max(0.001, float(np.max(np.abs(imaginary))) * 0.55)
+    zoom.set(
+        xlim=(float(real.min()) - margin_x, 1 + margin_x),
+        ylim=(float(imaginary.min()) - margin_y, float(imaginary.max()) + margin_y),
     )
-    ax.axhline(0, color=PALETTE["grid"], lw=1)
-    ax.axvline(0, color=PALETTE["grid"], lw=1)
-    ax.set(
-        xlabel="Real part",
-        ylabel="Imaginary part",
-        xlim=(-1.08, 1.08),
-        ylim=(-1.08, 1.08),
-    )
-    ax.set_aspect("equal")
-    ax.set_title(f"Transition spectrum | gap = {chain['spectral_gap']:.4f}", pad=13)
-    ax.grid()
+    zoom.set_title(f"Close-up | spectral gap {chain['spectral_gap']:.4f}")
+    for index, value in enumerate(eig):
+        zoom.annotate(
+            f"λ{index + 1}",
+            (value.real, value.imag),
+            xytext=(4, 8 if index % 2 == 0 else -15),
+            textcoords="offset points",
+            fontsize=9,
+        )
     written.append(save(fig, out, "09_transition_spectrum.png"))
 
     if history:
         fig, ax = plt.subplots(figsize=(9, 4), layout="constrained")
         ax.plot(history, lw=2.0, marker="o", markersize=3.5, color=ACCENT)
         ax.set(xlabel="EM iteration", ylabel="Log likelihood")
-        ax.set_title("Baum–Welch training objective", loc="left")
+        ax.set_title("Baum–Welch observed-data log likelihood", loc="left")
         ax.grid()
         written.append(save(fig, out, "10_em_convergence.png"))
+    written.extend(sage_plots(model, sage, out))
+    return written
+
+
+def sage_plots(model: ModelArtifact, report: dict, out: Path) -> list[Path]:
+    """Interpretable plots for quantities calculated by SageMath."""
+    names = model.states
+    chain = report["markov_chain"]
+    written = []
+    k = len(names)
+    labels = [name.replace("_", "\n") for name in names]
+
+    # Long-run off-diagonal events per hour, under the transition matrix alone.
+    flow = np.asarray(chain["stationary_offdiagonal_flow_per_hour"])
+    fig, ax = plt.subplots(figsize=(9, 7.3), layout="constrained")
+    masked = np.eye(k, dtype=bool) | ~model.mask
+    display = np.ma.masked_where(masked, flow)
+    cmap = POSTER_CMAP.copy()
+    cmap.set_bad(PALETTE["grid"])
+    image = ax.imshow(display, cmap=cmap, vmin=0)
+    ax.set(
+        xticks=range(k),
+        xticklabels=labels,
+        yticks=range(k),
+        yticklabels=[n.replace("_", " ") for n in names],
+        xlabel="Destination",
+        ylabel="Origin",
+    )
+    ax.set_title("Stationary off-diagonal transitions | expected per hour")
+    for i in range(k):
+        for j in range(k):
+            text = (
+                "—"
+                if i == j
+                else (
+                    "×"
+                    if not model.mask[i, j]
+                    else (f"{flow[i, j]:.2f}" if flow[i, j] >= 0.005 else "<.01")
+                )
+            )
+            ax.text(
+                j,
+                i,
+                text,
+                ha="center",
+                va="center",
+                fontsize=8,
+                color="white" if flow[i, j] > float(np.max(flow)) * 0.55 else INK,
+            )
+    fig.colorbar(
+        image, ax=ax, shrink=0.8, label="Transitions/hour under stationary chain"
+    )
+    written.append(save(fig, out, "16_stationary_flow.png"))
+
+    convergence = chain["worst_case_convergence"]
+    fig, ax = plt.subplots(figsize=(9.7, 4.6), layout="constrained")
+    ax.plot(
+        [v["seconds"] / 60 for v in convergence],
+        [v["worst_total_variation"] for v in convergence],
+        marker="o",
+        lw=2,
+        color=ACCENT,
+    )
+    ax.set(
+        xlabel="Elapsed time without new observations (minutes)",
+        ylabel="Worst-case total-variation distance",
+        ylim=(0, 1),
+    )
+    ax.set_title("Convergence to stationarity from each initial state")
+    ax.grid()
+    written.append(save(fig, out, "17_convergence_to_stationarity.png"))
+
+    explanations = report["emissions"]["adjacent_pair_feature_contributions"]
+    pair_names = [
+        " / ".join(item["states"]).replace("THERMAL_", "T_") for item in explanations
+    ]
+    feature_names = list(model.feature_names)
+    proportions = np.array(
+        [
+            [
+                item["contributions"][f] / item["distance"] if item["distance"] else 0
+                for f in feature_names
+            ]
+            for item in explanations
+        ]
+    )
+    fig, ax = plt.subplots(
+        figsize=(12, max(6, 0.48 * len(pair_names))), layout="constrained"
+    )
+    image = ax.imshow(proportions, aspect="auto", cmap=POSTER_CMAP, vmin=0, vmax=1)
+    ax.set(
+        yticks=range(len(pair_names)),
+        yticklabels=pair_names,
+        xticks=range(len(feature_names)),
+        xticklabels=[f.replace("_", "\n") for f in feature_names],
+    )
+    ax.tick_params(axis="x", labelsize=8)
+    ax.set_title("Features driving emission separation | permitted state neighbors")
+    for i in range(len(pair_names)):
+        for j in range(len(feature_names)):
+            v = proportions[i, j]
+            if v >= 0.08:
+                ax.text(
+                    j,
+                    i,
+                    f"{v:.0%}",
+                    ha="center",
+                    va="center",
+                    fontsize=8,
+                    color="white" if v >= 0.58 else INK,
+                )
+    fig.colorbar(image, ax=ax, shrink=0.7, label="Share of Bhattacharyya distance")
+    written.append(save(fig, out, "18_emission_separation_drivers.png"))
+
+    hits = np.asarray(chain["expected_hitting_seconds"]) / 60
+    fig, ax = plt.subplots(figsize=(9, 7.3), layout="constrained")
+    image = ax.imshow(hits, cmap=POSTER_CMAP, vmin=0)
+    ax.set(
+        xticks=range(k),
+        xticklabels=labels,
+        yticks=range(k),
+        yticklabels=[n.replace("_", " ") for n in names],
+        xlabel="Target state",
+        ylabel="Starting state",
+    )
+    ax.set_title("Mean first-passage times | transition-only (minutes)")
+    for i in range(k):
+        for j in range(k):
+            ax.text(
+                j,
+                i,
+                f"{hits[i, j]:.1f}",
+                ha="center",
+                va="center",
+                fontsize=9,
+                color="white" if hits[i, j] > float(np.max(hits)) * 0.58 else INK,
+            )
+    fig.colorbar(image, ax=ax, shrink=0.8, label="Expected minutes")
+    written.append(save(fig, out, "19_first_passage_times.png"))
+
+    modes = chain["slow_modes"]
+    if modes:
+        amplitudes = np.array(
+            [[mode["amplitude"][name] for name in names] for mode in modes]
+        )
+        fig, ax = plt.subplots(figsize=(10, 4.6), layout="constrained")
+        image = ax.imshow(amplitudes, cmap=POSTER_CMAP, vmin=0, vmax=1, aspect="auto")
+        mode_labels = [
+            f"λ = {v['eigenvalue']['real']:.4f} "
+            f"{'+' if v['eigenvalue']['imag'] >= 0 else '-'} "
+            f"{abs(v['eigenvalue']['imag']):.4f}i"
+            for v in modes
+        ]
+        ax.set(
+            xticks=range(k),
+            xticklabels=labels,
+            yticks=range(len(modes)),
+            yticklabels=mode_labels,
+        )
+        ax.set_title("Slow probability modes | left eigenvector magnitudes")
+        ax.grid(False)
+        for i in range(len(modes)):
+            for j in range(k):
+                value = amplitudes[i, j]
+                ax.text(
+                    j,
+                    i,
+                    f"{value:.2f}",
+                    ha="center",
+                    va="center",
+                    color="white" if value > 0.63 else INK,
+                    fontsize=9,
+                )
+        fig.colorbar(
+            image, ax=ax, shrink=0.76, label="Magnitude relative to largest component"
+        )
+        written.append(save(fig, out, "21_slow_modes.png"))
+
+    passage = chain["first_passage"]
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5.1), layout="constrained", sharey=True)
+    for ax, key, title, from_states in (
+        (
+            axes[0],
+            "thermal",
+            "First thermal state",
+            ["IDLE", "LOAD_RISING", "SUSTAINED_LOAD", "COOLING"],
+        ),
+        (
+            axes[1],
+            "idle",
+            "Return to IDLE",
+            [
+                "LOAD_RISING",
+                "SUSTAINED_LOAD",
+                "THERMAL_RESPONSE",
+                "THERMAL_STEADY",
+                "COOLING",
+            ],
+        ),
+    ):
+        item = passage[key]
+        x = np.asarray(item["horizons_seconds"]) / 60
+        for state in from_states:
+            if state not in item["probability_by_start"]:
+                continue
+            i = names.index(state)
+            ax.plot(
+                x,
+                item["probability_by_start"][state],
+                marker="o",
+                markersize=3.2,
+                label=state.replace("_", " "),
+                color=PURPLES[i],
+            )
+        ax.set(title=title, xlabel="Time horizon (minutes)", ylim=(-0.025, 1.025))
+        ax.grid()
+        ax.legend(frameon=False, fontsize=8, loc="lower right")
+    axes[0].set_ylabel("Probability of having reached target")
+    fig.suptitle(
+        "First-passage probabilities | transitions only", fontsize=16, weight="bold"
+    )
+    written.append(save(fig, out, "22_first_passage_probabilities.png"))
+
+    committor = chain["thermal_before_idle_committor"]
+    fig, ax = plt.subplots(figsize=(10, 4.5), layout="constrained")
+    values = [committor[name] for name in names]
+    ax.bar(range(k), values, color=PURPLES)
+    ax.set(
+        xticks=range(k),
+        xticklabels=labels,
+        ylim=(0, 1.05),
+        ylabel="P(reach thermal states before IDLE)",
+    )
+    ax.set_title("Committor | competing first-passage destinations")
+    for i, value in enumerate(values):
+        ax.text(i, min(1.01, value + 0.025), f"{value:.2f}", ha="center", fontsize=9)
+    ax.grid(axis="y")
+    written.append(save(fig, out, "23_thermal_committor.png"))
+
+    from matplotlib.patches import FancyArrowPatch, Circle
+
+    currents = np.asarray(chain["stationary_currents_per_hour"])
+    fig, ax = plt.subplots(figsize=(9, 7), layout="constrained")
+    angles = np.pi / 2 - 2 * np.pi * np.arange(k) / k
+    points = np.column_stack((np.cos(angles), np.sin(angles)))
+    edges = sorted(
+        ((abs(currents[i, j]), i, j) for i in range(k) for j in range(i + 1, k)),
+        reverse=True,
+    )
+    largest = edges[0][0] if edges else 1.0
+    for strength, i, j in edges:
+        if strength < max(0.001, largest * 0.015):
+            continue
+        src, dst = (i, j) if currents[i, j] > 0 else (j, i)
+        arrow = FancyArrowPatch(
+            points[src],
+            points[dst],
+            connectionstyle="arc3,rad=.17",
+            arrowstyle="-|>",
+            mutation_scale=12,
+            shrinkA=27,
+            shrinkB=27,
+            linewidth=1.2 + 5 * strength / largest,
+            color=PALETTE["lavender"],
+            alpha=0.78,
+        )
+        ax.add_patch(arrow)
+    for i, (x, y) in enumerate(points):
+        ax.add_patch(Circle((x, y), 0.19, color=PURPLES[i], alpha=0.93, zorder=5))
+        ax.text(
+            x,
+            y,
+            names[i].replace("_", "\n"),
+            ha="center",
+            va="center",
+            fontsize=8,
+            weight="bold",
+            color=INK,
+            zorder=6,
+        )
+    ax.set(xlim=(-1.5, 1.5), ylim=(-1.35, 1.35))
+    ax.set_aspect("equal")
+    ax.axis("off")
+    ax.set_title("Net stationary currents | direction and relative magnitude")
+    fig.text(
+        0.5,
+        0.05,
+        "Arrow width = |πᵢ Aᵢⱼ − πⱼ Aⱼᵢ| × 3600 / cadence",
+        ha="center",
+        fontsize=10,
+        color=PALETTE["muted"],
+    )
+    written.append(save(fig, out, "24_stationary_currents.png"))
+
+    sensitivity = chain["stationary_sensitivity"]
+    if sensitivity:
+        effects = np.array(
+            [
+                [item["delta_stationary_probability"][name] * 100 for name in names]
+                for item in sensitivity
+            ]
+        )
+        magnitude = max(0.01, float(np.max(np.abs(effects))))
+        diverging = LinearSegmentedColormap.from_list(
+            "mint_purple", [PALETTE["mint"], PALETTE["paper"], PALETTE["lavender"]]
+        )
+        fig, ax = plt.subplots(
+            figsize=(12, max(6, 0.39 * len(sensitivity))), layout="constrained"
+        )
+        image = ax.imshow(
+            effects, cmap=diverging, vmin=-magnitude, vmax=magnitude, aspect="auto"
+        )
+        ax.set(
+            xticks=range(k),
+            xticklabels=labels,
+            yticks=range(len(sensitivity)),
+            yticklabels=[f"{row['edge'][0]} → {row['edge'][1]}" for row in sensitivity],
+        )
+        ax.tick_params(axis="y", labelsize=8)
+        ax.grid(False)
+        ax.set_title(
+            "Stationary sensitivity | increase edge by 0.0001 at self-loop expense"
+        )
+        for i in range(len(sensitivity)):
+            for j in range(k):
+                value = effects[i, j]
+                if abs(value) >= 0.005:
+                    ax.text(j, i, f"{value:+.2f}", ha="center", va="center", fontsize=8)
+        fig.colorbar(
+            image,
+            ax=ax,
+            shrink=0.8,
+            label="Estimated stationary change (percentage points)",
+        )
+        written.append(save(fig, out, "25_stationary_sensitivity.png"))
+
     return written

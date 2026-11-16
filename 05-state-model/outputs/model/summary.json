@@ -1,19 +1,35 @@
 {
   "observations_filtered": 2949,
-  "map_state_counts": {
-    "IDLE": 763,
-    "LOAD_RISING": 466,
-    "SUSTAINED_LOAD": 551,
-    "THERMAL_RESPONSE": 453,
-    "THERMAL_STEADY": 500,
-    "COOLING": 216
+  "valid_observation_samples": 2911,
+  "prediction_only_samples": 38,
+  "reported_state": "guarded",
+  "state_counts": {
+    "IDLE": 925,
+    "LOAD_RISING": 622,
+    "SUSTAINED_LOAD": 738,
+    "THERMAL_RESPONSE": 394,
+    "THERMAL_STEADY": 171,
+    "COOLING": 99
   },
-  "map_vs_viterbi_agreement": 0.9755849440488301,
-  "posterior_entropy_mean_nats": 0.008584937812390796,
+  "guarded_observed_switches": 7,
+  "guarded_forbidden_direct_switches": 0,
+  "posterior_entropy_mean_nats": 0.007600345212195116,
   "sage_report": "sage_diagnostics.json",
   "interpretation_report": "state_interpretation.json",
   "dynamics_report": "state_dynamics.json",
-  "map_observed_switches": 27,
-  "viterbi_observed_switches": 23,
-  "map_forbidden_direct_switches": 12
+  "comparison": {
+    "map_state_counts": {
+      "IDLE": 763,
+      "LOAD_RISING": 466,
+      "SUSTAINED_LOAD": 551,
+      "THERMAL_RESPONSE": 453,
+      "THERMAL_STEADY": 500,
+      "COOLING": 216
+    },
+    "map_vs_viterbi_agreement": 0.9755849440488301,
+    "guarded_vs_map_agreement": 0.7690742624618515,
+    "map_observed_switches": 27,
+    "viterbi_observed_switches": 23,
+    "map_forbidden_direct_switches": 12
+  }
 }
