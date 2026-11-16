@@ -1,0 +1,19 @@
+{
+  "observations_filtered": 2949,
+  "map_state_counts": {
+    "IDLE": 763,
+    "LOAD_RISING": 466,
+    "SUSTAINED_LOAD": 551,
+    "THERMAL_RESPONSE": 453,
+    "THERMAL_STEADY": 500,
+    "COOLING": 216
+  },
+  "map_vs_viterbi_agreement": 0.9755849440488301,
+  "posterior_entropy_mean_nats": 0.008584937812390796,
+  "sage_report": "sage_diagnostics.json",
+  "interpretation_report": "state_interpretation.json",
+  "dynamics_report": "state_dynamics.json",
+  "map_observed_switches": 27,
+  "viterbi_observed_switches": 23,
+  "map_forbidden_direct_switches": 12
+}
