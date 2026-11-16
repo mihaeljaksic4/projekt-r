@@ -90,9 +90,7 @@ def analyze_model(data, artifact, sage, history, out, sage_path):
     }
     (out / "state_interpretation.json").write_text(json.dumps(interpretation, indent=2))
     (out / "state_dynamics.json").write_text(json.dumps(dynamics, indent=2))
-    plots += interpretation_plots(
-        sliced, map_path, artifact.states, interpretation, out
-    )
+    plots += interpretation_plots(sliced, guarded, artifact.states, interpretation, out)
     plots += dynamics_plots(
         artifact.states,
         artifact.mask,
