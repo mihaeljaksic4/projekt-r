@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "state_model"
+version = "0.3.1"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26"]
+
+[dependency-groups]
+analysis = ["matplotlib>=3.8"]
+
+[tool.uv]
+default-groups = ["analysis"]
+
+[project.scripts]
+hmm-train = "state_model.training.cli:main"
+hmm-analyze = "state_model.analysis.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/state_model"]
+
