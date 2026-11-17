@@ -69,6 +69,7 @@ def stop_workload(session_id):  #ugasi cijeli workload
     svi = _stablo(workloadi[session_id].pid)
     for p in svi:
         try:
+            p.resume()
             p.terminate()
         except psutil.NoSuchProcess:
             pass
