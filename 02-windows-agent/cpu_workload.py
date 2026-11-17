@@ -1,3 +1,6 @@
+#stvaranje opterećenja
+
+
 import argparse
 import multiprocessing as mp
 import time

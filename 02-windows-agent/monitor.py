@@ -1,3 +1,5 @@
+#monitor toga što radi cijelo računalo
+
 import psutil
 import json
 import time
