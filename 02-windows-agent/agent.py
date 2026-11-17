@@ -1,9 +1,15 @@
 import asyncio
+import json
 import time
 import psutil
 
+from websockets.asyncio.client import connect
+from websockets.exceptions import ConnectionClosed
+
 import monitor
 import upravljanje
+
+ADRESA = "ws://localhost:8000/ws/agent"
 
 NAREDBE = {
     "start_workload": upravljanje.start_workload,
@@ -15,58 +21,71 @@ NAREDBE = {
     "get_process_metrics": upravljanje.get_process_metrics,
 }
 
-async def obradi_naredbu(naredba):
-    ime = naredba.get("cmd")
-    args = naredba.get("args",{})
-    print(f"<-- NAREDBA {ime} {args}")
-    
+def napravi_poruku(message_type, **polja):
+    poruka = {"message_type": message_type, "timestamp": time.time(), "source": "system-agent"}
+    poruka.update(polja)
+    return json.dumps(poruka)
+
+
+async def obradi_naredbu(ime, args):
     funkcija = NAREDBE.get(ime)
     if funkcija is None:
-        odgovor = {"id": naredba.get("id"), "ok": False, "error": f"nepoznata naredba: {ime}"}
-    else:
-        try:
-            rezultat = await asyncio.to_thread(funkcija, **args)
-            odgovor = {"id": naredba.get("id"), "ok": True, "result": rezultat}
-        except Exception as e:
-            odgovor = {"id": naredba.get("id"), "ok": False, "error": f"{type(e).__name__}: {e}"}
-            
-    print(f"--> ODGOVOR {odgovor}")
-    return odgovor
+        return {"ok": False, "error": f"Nepoznata naredba: {ime}"}
+    try:
+        rezultat = await asyncio.to_thread(funkcija, **args)
+        return {"ok": True, "result": rezultat}
+    except Exception as e:
+        return {"ok": False, "error": f"{type(e).__name__}: {e}"}
 
-async def salji_metrike():
+async def salji_metrike(ws):
     psutil.cpu_percent(percpu=True)
     prev_disk = psutil.disk_io_counters()
     prev_t = time.time()
     
-    while True:
-        await asyncio.sleep(1)
-        uzorak, prev_disk, prev_t = monitor.collect(prev_disk, prev_t)
-        print(f"METRIKE cpu={uzorak['cpu_usage']}% jezgre={uzorak['cpu_per_core']}")
+    try:   
+        while True:
+            await asyncio.sleep(1)
+            uzorak, prev_disk, prev_t = monitor.collect(prev_disk, prev_t)
+            vrijeme = uzorak.pop("timestamp")
+            await ws.send(napravi_poruku("telemetry", timestamp=vrijeme, metrics=uzorak))
+    except ConnectionClosed:
+        pass
+
         
-async def lazni_control():      #glumi dio 6
-    await asyncio.sleep(2)
-    odg = await obradi_naredbu({"id": "c-1", "cmd": "start_workload", "args": {"br_jezgri": 2, "trajanje": 30}})
-    
-    pid = odg["result"]["pid"]
-    sid = odg["result"]["session_id"]
-    
-    await asyncio.sleep(4)
-    await obradi_naredbu({"id": "c-2", "cmd": "set_affinity", "args": {"pid": pid, "jezgre": [0]}})
-    
-    await asyncio.sleep(4)
-    await obradi_naredbu({"id": "c-3", "cmd": "suspend_process", "args": {"pid": pid}})
-    
-    await asyncio.sleep(3)
-    await obradi_naredbu({"id": "c-4", "cmd": "nepostojeca", "args": {}})
-    
-    await asyncio.sleep(1)
-    await obradi_naredbu({"id": "c-5", "cmd": "stop_workload", "args": {"session_id": sid}})
+async def primaj_naredbe(ws):
+    async for tekst in ws:
+        poruka = json.loads(tekst)
+        if poruka.get("message_type") != "command":
+            continue
+        ime = poruka["cmd"]
+        args = poruka.get("args", {})
+        print(f"<-- NAREDBA {poruka['id']} {ime} {args}")
+        odgovor = await obradi_naredbu(ime, args)
+        print(f"--> ODGOVOR {poruka['id']} {odgovor}")
+        await ws.send(napravi_poruku("response", id=poruka["id"], **odgovor))
     
 async def main():
-    await asyncio.gather(salji_metrike(), lazni_control())
+    while True:
+        try:
+            async with connect(ADRESA) as ws:
+                print(f"Spojen na {ADRESA}")
+                metrike = asyncio.create_task(salji_metrike(ws))
+                try:
+                    await primaj_naredbe(ws)
+                finally:
+                    metrike.cancel()
+            print("Server je zatvorio vezu.")
+        except (OSError, ConnectionClosed) as e:
+            print(f"Nema veze sa serverom ({type(e).__name__}).")
+        print("Pokušavam ponovno za 3 s...")
+        await asyncio.sleep(3)
     
 if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
         print("\nAgent zaustavljen.")
+    finally:
+        for sid in list(upravljanje.workloadi):
+            if upravljanje.workload_radi(sid):
+                print(f"Gasim workload {sid}: {upravljanje.stop_workload(sid)}")
