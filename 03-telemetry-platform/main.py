@@ -9,13 +9,13 @@ from typing import Literal
 
 #klasa Metrics definira fieldove za izmjerene vrijednosti po dogovoru
 class Metrics(BaseModel):
-    cpu_usage: float
-    gpu_usage: float
-    ram_usage: float
-    disk_io: float
-    cpu_temp: float
-    gpu_temp: float
-    fan_rpm: float
+    cpu_usage: float | None = None
+    gpu_usage: float | None = None
+    ram_usage: float | None = None
+    disk_io: float | None = None
+    cpu_temp: float | None = None
+    gpu_temp: float | None = None
+    fan_rpm: float | None = None
 
 #obje klase inheritaju BaseModel - Pydantic provjerava odgovaraju li podaci toj strukturi
 
