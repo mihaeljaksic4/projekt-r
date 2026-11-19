@@ -1,0 +1,6 @@
+﻿,timestamp,type,workload,parameters,process,value
+0,1730000010.0,workload_started,cpu_stress,{'duration': 90},,
+1,1730000011.0,process_started,,,python.exe,
+2,1730000020.0,resource_limit_applied,,{'max_cpu_percent': 80},,
+3,1730000050.0,fan_profile_changed,,,,MAX
+4,1730000100.0,workload_stopped,cpu_stress,,,

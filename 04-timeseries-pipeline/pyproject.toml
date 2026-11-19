@@ -1,0 +1,26 @@
+[project]
+name = "04-timeseries-pipeline"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "J. Furdi", email = "jana.furdi@fer.unizg.hr" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "pandas>=3.1.1",
+    "state-model",
+]
+
+[project.scripts]
+04-timeseries-pipeline = "_04_timeseries_pipeline:main"
+
+[tool.uv.build-backend]
+module-name = "_04_timeseries_pipeline"
+
+[tool.uv.sources]
+state-model = { path = "../05-state-model", editable = true }
+
+[build-system]
+requires = ["uv_build>=0.13.9,<0.14.0"]
+build-backend = "uv_build"

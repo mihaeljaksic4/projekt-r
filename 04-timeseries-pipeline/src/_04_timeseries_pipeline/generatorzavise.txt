@@ -1,0 +1,295 @@
+import random
+#ovo je ai, nije moje
+
+# =====================================================================
+# NOVO: scenariji koji pokrivaju sva stanja + više sesija
+# =====================================================================
+#
+# Svaki scenarij je popis SEGMENATA. Segment kaže: koliko traje, koliko
+# opterećenje CPU-a/GPU-a želimo (cilj) i što se na početku segmenta dogodi
+# (workload, ventilator, ograničenje). Opterećenje se onda glatko približava
+# cilju, a temperatura i ventilator reagiraju s odgodom (kao u stvarnosti).
+#
+# Stanja koja se pojavljuju (približno):
+#   IDLE              mirno, nisko opterećenje
+#   LOAD_RISING       opterećenje raste
+#   SUSTAINED_LOAD    visoko opterećenje drži se
+#   THERMAL_RESPONSE  temperatura i ventilator još rastu pod opterećenjem
+#   THERMAL_STEADY    temperatura se ustalila na visokoj vrijednosti
+#   COOLING           opterećenje je palo, temperatura pada
+#
+# Odabrano trajanje je nasumično u rasponu, pa su sesije različite.
+
+AMBIJENT = 38.0          # osnovna temperatura (°C)
+TAU_TEMP_CPU = 28.0      # koliko sporo temperatura prati toplinu (s)
+TAU_TEMP_GPU = 24.0
+TAU_FAN = 6.0            # koliko sporo ventilator prati temperaturu (s)
+
+
+def _d(rng, lo, hi):
+    return int(rng.uniform(lo, hi))
+
+
+def _seg(trajanje, cpu, gpu, tau=2.5, **dodatno):
+    """Jedan segment: trajanje (s), cilj CPU/GPU (%), brzina promjene (tau, s)."""
+    s = {"d": trajanje, "cpu": cpu, "gpu": gpu, "tau": tau}
+    s.update(dodatno)            # ev=[...], fan="MAX", cap=70, ...
+    return s
+
+
+def _ev_start(ime, trajanje):
+    return [{"type": "workload_started", "workload": ime, "parameters": {"duration": trajanje}},
+            {"type": "process_started", "process": "python.exe"}]
+
+
+def _ev_stop(ime):
+    return [{"type": "workload_stopped", "workload": ime}]
+
+
+def scenarij_cpu_stress(rng):
+    vrh, trajanje = rng.uniform(88, 100), _d(rng, 130, 200)
+    return [
+        _seg(_d(rng, 20, 35), 4, 2),
+        _seg(_d(rng, 15, 25), vrh, 4, tau=5.0, ev=_ev_start("cpu_stress", trajanje)),
+        _seg(trajanje, vrh, 4),
+        _seg(_d(rng, 8, 14), 4, 2, tau=3.0, ev=_ev_stop("cpu_stress")),
+        _seg(_d(rng, 80, 120), 4, 2),
+    ]
+
+
+def scenarij_gpu_stress(rng):
+    vrh, trajanje = rng.uniform(88, 100), _d(rng, 130, 200)
+    return [
+        _seg(_d(rng, 20, 35), 4, 2),
+        _seg(_d(rng, 12, 20), rng.uniform(20, 35), vrh, tau=4.0, ev=_ev_start("gpu_stress", trajanje)),
+        _seg(trajanje, rng.uniform(20, 35), vrh),
+        _seg(_d(rng, 8, 14), 4, 2, tau=3.0, ev=_ev_stop("gpu_stress")),
+        _seg(_d(rng, 80, 120), 4, 2),
+    ]
+
+
+def scenarij_mjesoviti(rng):
+    cpu, gpu, trajanje = rng.uniform(70, 90), rng.uniform(70, 90), _d(rng, 120, 180)
+    return [
+        _seg(_d(rng, 20, 30), 5, 3),
+        _seg(_d(rng, 15, 25), cpu, gpu, tau=5.0, ev=_ev_start("mixed", trajanje)),
+        _seg(trajanje, cpu, gpu),
+        _seg(_d(rng, 8, 14), 5, 3, tau=3.0, ev=_ev_stop("mixed")),
+        _seg(_d(rng, 80, 110), 5, 3),
+    ]
+
+
+def scenarij_pulsirano(rng):
+    segmenti = [_seg(_d(rng, 15, 25), 4, 2)]
+    for i in range(rng.randint(4, 6)):
+        vrh, trajanje = rng.uniform(80, 100), _d(rng, 25, 45)
+        segmenti.append(_seg(trajanje, vrh, 4, tau=3.0, ev=_ev_start("cpu_burst", trajanje)))
+        segmenti.append(_seg(_d(rng, 35, 60), 4, 2, tau=3.0, ev=_ev_stop("cpu_burst")))
+    return segmenti
+
+
+def scenarij_stupnjevito(rng):
+    razine, trajanje = [30, 60, 90, 60, 30], _d(rng, 50, 70)
+    segmenti = [_seg(_d(rng, 20, 30), 4, 2),
+                _seg(trajanje, razine[0], 4, ev=_ev_start("cpu_steps", trajanje * 5))]
+    for r in razine[1:]:
+        segmenti.append(_seg(_d(rng, 50, 70), r + rng.uniform(-4, 4), 4, tau=4.0))
+    segmenti.append(_seg(_d(rng, 8, 14), 4, 2, tau=3.0, ev=_ev_stop("cpu_steps")))
+    segmenti.append(_seg(_d(rng, 70, 100), 4, 2))
+    return segmenti
+
+
+def scenarij_mirno(rng):
+    segmenti = []
+    for i in range(rng.randint(8, 12)):
+        segmenti.append(_seg(_d(rng, 15, 35), rng.uniform(2, 8), rng.uniform(1, 4)))
+        if rng.random() < 0.6:
+            segmenti.append(_seg(_d(rng, 4, 10), rng.uniform(15, 40), rng.uniform(1, 10), tau=2.0))
+    return segmenti
+
+
+def scenarij_fan_max(rng):
+    vrh, trajanje = rng.uniform(88, 100), _d(rng, 130, 200)
+    return [
+        _seg(_d(rng, 20, 30), 4, 2),
+        _seg(_d(rng, 15, 25), vrh, 4, tau=5.0, ev=_ev_start("cpu_stress", trajanje)),
+        _seg(_d(rng, 40, 60), vrh, 4),                       # AUTO ventilator: temperatura raste
+        _seg(trajanje, vrh, 4, fan="MAX"),                   # MAX ventilator: temperatura pada pod opterećenjem
+        _seg(_d(rng, 8, 14), 4, 2, tau=3.0, ev=_ev_stop("cpu_stress")),
+        _seg(_d(rng, 70, 100), 4, 2),
+    ]
+
+
+def scenarij_ograniceno(rng):
+    vrh, trajanje = rng.uniform(90, 100), _d(rng, 130, 200)
+    ogranici = rng.choice([("resource", 65), ("power", 55)])
+    if ogranici[0] == "resource":
+        ev = [{"type": "resource_limit_applied", "parameters": {"max_cpu_percent": ogranici[1]}}]
+    else:
+        ev = [{"type": "power_plan_changed", "value": "POWER_SAVER"}]
+    return [
+        _seg(_d(rng, 20, 30), 4, 2),
+        _seg(_d(rng, 15, 25), vrh, 4, tau=5.0, ev=_ev_start("cpu_stress", trajanje)),
+        _seg(_d(rng, 60, 80), vrh, 4),
+        _seg(trajanje, vrh, 4, cap=ogranici[1], ev=ev),      # ograničenje: opterećenje i temperatura padaju
+        _seg(_d(rng, 8, 14), 4, 2, tau=3.0, ev=_ev_stop("cpu_stress")),
+        _seg(_d(rng, 70, 100), 4, 2),
+    ]
+
+
+SCENARIJI = {
+    "cpu_stress": scenarij_cpu_stress,
+    "gpu_stress": scenarij_gpu_stress,
+    "mjesoviti": scenarij_mjesoviti,
+    "pulsirano": scenarij_pulsirano,
+    "stupnjevito": scenarij_stupnjevito,
+    "mirno": scenarij_mirno,
+    "fan_max": scenarij_fan_max,
+    "ograniceno": scenarij_ograniceno,
+}
+
+
+def generiraj_sesiju(scenarij="cpu_stress", pocetak=1730000000.0, seed=1, rupe=True, trajanje=None):
+    """
+    Jedna cijela sesija. Vraća (uzorci, eventi) u istom formatu kao stare funkcije.
+    trajanje   -> broj sekundi (ako nije zadano, traje koliko scenarij)
+    rupe=True  -> ubaci kratke i dugu rupu u telemetriji te nemoguće vrijednosti (kao u stvarnosti)
+    rupe=False -> čisti podaci
+    """
+    rng = random.Random(seed)
+    segmenti = SCENARIJI[scenarij](rng)
+
+    # --- po sekundi: ciljevi i događaji ---
+    cpu_cilj, gpu_cilj, tau_opt, cap, fan_mod, eventi = [], [], [], [], [], []
+    trenutni_cap, trenutni_fan = 100, "BALANCED"
+    for seg in segmenti:
+        pocetak_seg = len(cpu_cilj)
+        if "cap" in seg:
+            trenutni_cap = seg["cap"]
+        if "fan" in seg:
+            trenutni_fan = seg["fan"]
+            eventi.append({"timestamp": pocetak + pocetak_seg + 0.5, "type": "fan_profile_changed",
+                           "value": trenutni_fan})
+        for e in seg.get("ev", []):
+            eventi.append({"timestamp": pocetak + pocetak_seg + 0.5, **e})
+        for _ in range(seg["d"]):
+            cpu_cilj.append(seg["cpu"]); gpu_cilj.append(seg["gpu"])
+            tau_opt.append(seg["tau"]); cap.append(trenutni_cap); fan_mod.append(trenutni_fan)
+    if trajanje is not None:                      # skrati ili produlji (mirno) na traženo trajanje
+        manjak = trajanje - len(cpu_cilj)
+        if manjak > 0:
+            cpu_cilj += [4] * manjak; gpu_cilj += [2] * manjak; tau_opt += [3.0] * manjak
+            cap += [cap[-1]] * manjak; fan_mod += [fan_mod[-1]] * manjak
+        else:
+            cpu_cilj, gpu_cilj, tau_opt = cpu_cilj[:trajanje], gpu_cilj[:trajanje], tau_opt[:trajanje]
+            cap, fan_mod = cap[:trajanje], fan_mod[:trajanje]
+        eventi = [e for e in eventi if e["timestamp"] < pocetak + trajanje]
+    trajanje = len(cpu_cilj)
+
+    # --- rupe i greške ---
+    nema = set()                 # (kanal, sekunda) koji se ne šalje
+    kvar = {}                    # (kanal, sekunda) -> nemoguća vrijednost
+    if rupe:
+        for _ in range(rng.randint(2, 4)):                      # kratke rupe 1-3 s
+            s0, n = rng.randint(35, max(36, trajanje - 10)), rng.randint(1, 3)
+            for k in range(n):
+                nema.add((rng.choice(["cpu_temp", "gpu_temp", "fan_rpm"]), s0 + k))
+        if rng.random() < 0.4:                                   # duga rupa 8-20 s
+            s0, n = rng.randint(40, max(41, trajanje - 40)), rng.randint(8, 20)
+            for k in range(n):
+                nema.add(("cpu_temp", s0 + k))
+        for _ in range(rng.randint(1, 2)):                       # nemogući podaci
+            kvar[("cpu_temp", rng.randint(35, trajanje - 5))] = rng.choice([250.0, -50.0])
+
+    # --- simulacija ---
+    ambijent = AMBIJENT + rng.uniform(-4, 5)
+    cpu = gpu = 3.0
+    t_cpu, t_gpu, fan = ambijent + 8, ambijent + 4, 1800.0
+    ram0 = rng.uniform(35, 50)
+    uzorci = []
+
+    for s in range(trajanje):
+        cpu += (min(cpu_cilj[s], cap[s]) - cpu) / tau_opt[s]
+        gpu += (gpu_cilj[s] - gpu) / tau_opt[s]
+
+        # višak topline iznad ambijenta (dijele isti hladnjak, pa CPU i GPU griju jedno drugo)
+        visak_cpu = 0.82 * cpu + 0.25 * gpu
+        visak_gpu = 0.75 * gpu + 0.12 * cpu
+
+        # ventilator prati topliju komponentu
+        najtopliji = max(t_cpu, t_gpu + 3)
+        fan_cilj = 5200 if fan_mod[s] == "MAX" else min(4600, max(1800, 1800 + 70 * (najtopliji - 45)))
+        fan += (fan_cilj - fan) / TAU_FAN
+
+        # brži ventilator = manji toplinski otpor, ali temperatura nikad ne padne ispod ambijenta
+        otpor = 1.0 / (1.0 + (fan - 1800) / 3500)
+        cilj_cpu = ambijent + visak_cpu * otpor
+        cilj_gpu = ambijent - 3 + visak_gpu * (1.0 / (1.0 + 0.8 * (fan - 1800) / 3500))
+
+        t_cpu += (cilj_cpu - t_cpu) / TAU_TEMP_CPU
+        t_gpu += (cilj_gpu - t_gpu) / TAU_TEMP_GPU
+
+        izmjereno = {
+            "cpu_usage": min(100, max(0, cpu + rng.gauss(0, 1.5))),
+            "ram_usage": ram0 + 0.08 * cpu + 0.005 * s + rng.gauss(0, 0.4),
+            "gpu_usage": min(100, max(0, gpu + rng.gauss(0, 1.5))),
+            "disk_io": max(0, 2 + (6 if "ev" in segmenti_na(segmenti, s) else 0) + rng.uniform(0, 4)),
+            "cpu_temp": t_cpu + rng.gauss(0, 0.3),
+            "gpu_temp": t_gpu + rng.gauss(0, 0.3),
+            "fan_rpm": fan + rng.gauss(0, 25),
+        }
+        t = pocetak + s
+        for kanal, pomak, izvor in (("cpu_usage", 0.03, "system-agent"), ("ram_usage", 0.03, "system-agent"),
+                                    ("gpu_usage", 0.05, "system-agent"), ("disk_io", 0.07, "system-agent"),
+                                    ("cpu_temp", 0.21, "omen-adapter"), ("gpu_temp", 0.22, "omen-adapter"),
+                                    ("fan_rpm", 0.24, "omen-adapter")):
+            if (kanal, s) in nema:
+                continue
+            v = kvar.get((kanal, s), izmjereno[kanal])
+            uzorci.append({"timestamp": t + pomak, "source": izvor,
+                           "metrics": {kanal: round(v) if kanal == "fan_rpm" else round(v, 1)}})
+
+    uzorci.sort(key=lambda u: u["timestamp"])
+    eventi.sort(key=lambda e: e["timestamp"])
+    return uzorci, eventi
+
+
+def segmenti_na(segmenti, s):
+    """Segment koji vrijedi u sekundi s (za početak segmenta s događajem diramo disk)."""
+    pocetak = 0
+    for seg in segmenti:
+        if pocetak <= s < pocetak + seg["d"]:
+            return seg if s - pocetak < 3 else {}
+        pocetak += seg["d"]
+    return {}
+
+
+def generiraj_vise_sesija(broj=16, seed=1, rupe=True, razmak=7200.0, pocetak=1730000000.0):
+    """
+    Više sesija odjednom (kružno kroz scenarije). Svaka sesija je rječnik:
+    {"session_id", "scenarij", "pocetak", "uzorci", "eventi"}.
+    Sesije su međusobno razmaknute 'razmak' sekundi, pa se ne preklapaju.
+    """
+    imena = list(SCENARIJI)
+    sesije = []
+    for i in range(broj):
+        ime = imena[i % len(imena)]
+        p = pocetak + i * razmak
+        uzorci, eventi = generiraj_sesiju(ime, pocetak=p, seed=seed * 1000 + i, rupe=rupe)
+        sesije.append({"session_id": f"{ime}_{i:02d}", "scenarij": ime, "pocetak": p,
+                       "uzorci": uzorci, "eventi": eventi})
+    return sesije
+
+
+# =====================================================================
+# OMOTAČI: isti pozivi kao do sada (tvoj main), samo s dodatnim opcijama
+# =====================================================================
+
+def generiraj_uzorke(trajanje, pocetak, seed=1, scenarij="cpu_stress", rupe=True):
+    """Lažni dio 3: lista uzoraka. 'scenarij' je jedan od SCENARIJI, 'seed' bira varijantu."""
+    return generiraj_sesiju(scenarij, pocetak, seed, rupe, trajanje)[0]
+
+
+def generiraj_evente(pocetak=1730000000.0, seed=1, scenarij="cpu_stress", rupe=True, trajanje=None):
+    """Lažni dio 3: lista događaja. Mora dobiti ISTI seed i scenarij kao generiraj_uzorke."""
+    return generiraj_sesiju(scenarij, pocetak, seed, rupe, trajanje)[1]

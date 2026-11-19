@@ -1,0 +1,34 @@
+print("\n-----OBRAĐENA TABLICA----")
+print(w.tail(5).to_string())
+
+print("\n-----PROZOR OD 30 SEKUNDI------")
+print(djelic.to_string())
+print("Broj redaka:", len(djelic))
+
+print("\n----PORUKA ZA STATE MODEL----")
+print("Timestamp:", porukaprema5["timestamp"])
+print("Columns:", porukaprema5["columns"])
+print("Sequence:")
+print(pandas.DataFrame(porukaprema5["sequence"],columns=porukaprema5["columns"]).to_string(index=False))
+print("Derived:", porukaprema5["derived"])
+print("Context:", porukaprema5["context"])
+
+print("\n------STATE MODEL IZLAZ-------")
+print(natragod5)
+
+print("\n----FEATURE VECTOR------")
+print(pandas.DataFrame([features]).to_string(index=False))
+
+print("\n----PORUKA ZA DIO 6----")
+print(porukaprema6)
+
+print("\n-----GENERIRANI UZORCI-----")
+    print("Ukupno uzoraka:", len(svi_uzorci))
+    print(pandas.DataFrame([
+        {"timestamp": u["timestamp"], **u["metrics"]}
+        for u in svi_uzorci[:10]
+    ]).to_string(index=False))
+
+print("\n----GENERIRANI EVENTI----")
+print(pandas.DataFrame(svi_eventi).to_string(index=False))
+
