@@ -18,15 +18,15 @@ vektor značajki → Prediktor → Upravljac → izvrsi → modul 01 / 02
 
 ## Ulaz: feature vector (jednom u sekundi)
 
-Jedan ravni dict, isti stupci za treniranje (CSV) i za rad. Nazivi prate State Model (05).
+Jedan ravni dict, isti stupci za treniranje (CSV) i za rad. Nazivi prate Pipeline (04).
 
 | Grupa | Stupci |
 |---|---|
 | identifikacija | `timestamp`, `session_id` (samo u CSV-u) |
-| trenutne vrijednosti | `cpu_usage`, `gpu_usage`, `cpu_temp`, `gpu_temp`, `fan_rpm`, `ram_usage`, `disk_io` |
-| prosjeci zadnjih 30 s | `cpu_usage_mean`, `gpu_usage_mean`, `cpu_temp_mean`, `fan_rpm_mean`, `disk_io_mean` |
-| nagibi zadnjih 30 s | `cpu_load_slope`, `cpu_temp_slope`, `gpu_temp_slope`, `fan_rpm_slope` |
-| kontekst | `workload`, `fan_profile`, `performance_profile`, `power_plan`, opcionalno `workload_pid` |
+| CPU / GPU opterećenje | `CPU_load_current`, `CPU_load_mean_30s`, `CPU_load_slope_30s`, `GPU_load_current`, `GPU_load_mean_30s` |
+| temperature | `CPU_temp_current`, `CPU_temp_mean_30s`, `CPU_temp_slope_30s`, `GPU_temp_current`, `GPU_temp_slope_30s` |
+| ventilator, RAM, disk | `fan_RPM_current`, `fan_RPM_mean_30s`, `RAM_current`, `disk_IO_mean_30s` |
+| kontekst | `workload_type`, `fan_profile`, `performance_profile`, `power_plan`, opcionalno `workload_pid` |
 | State Model | `current_state`, `previous_state`, `time_in_state` |
 
 ## Izlaz

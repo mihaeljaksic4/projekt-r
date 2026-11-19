@@ -16,13 +16,16 @@ PUTANJA_MODELA = "models/predictor.joblib"
 HORIZONT = 30
 
 NUMERICKE = [
-    "cpu_usage", "gpu_usage", "cpu_temp", "gpu_temp", "fan_rpm", "ram_usage", "disk_io",
-    "cpu_usage_mean", "gpu_usage_mean", "cpu_temp_mean", "fan_rpm_mean", "disk_io_mean",
-    "cpu_load_slope", "cpu_temp_slope", "gpu_temp_slope", "fan_rpm_slope",
+    "CPU_load_current", "CPU_load_mean_30s", "CPU_load_slope_30s",
+    "GPU_load_current", "GPU_load_mean_30s",
+    "CPU_temp_current", "CPU_temp_mean_30s", "CPU_temp_slope_30s",
+    "GPU_temp_current", "GPU_temp_slope_30s",
+    "fan_RPM_current", "fan_RPM_mean_30s",
+    "RAM_current", "disk_IO_mean_30s",
     "time_in_state",
 ]
 KATEGORICKE = [
-    "workload", "fan_profile", "performance_profile", "power_plan",
+    "workload_type", "fan_profile", "performance_profile", "power_plan",
     "current_state", "previous_state",
 ]
 ZNACAJKE = NUMERICKE + KATEGORICKE
@@ -33,8 +36,8 @@ def dodaj_ciljeve(podaci):
     buducnost = podaci.groupby("session_id").shift(-HORIZONT)
 
     podaci["cilj_stanje"] = buducnost["current_state"]
-    podaci["cilj_promjena_cpu"] = buducnost["cpu_temp"] - podaci["cpu_temp"]
-    podaci["cilj_promjena_gpu"] = buducnost["gpu_temp"] - podaci["gpu_temp"]
+    podaci["cilj_promjena_cpu"] = buducnost["CPU_temp_current"] - podaci["CPU_temp_current"]
+    podaci["cilj_promjena_gpu"] = buducnost["GPU_temp_current"] - podaci["GPU_temp_current"]
     return podaci.dropna(subset=["cilj_stanje"])
 
 
