@@ -1,0 +1,61 @@
+{
+  "log_likelihood": [
+    -17408.9238303116,
+    -10781.483983518887,
+    -8135.0296109029905,
+    -6565.136207859372,
+    -6380.506756642018,
+    -6133.2661519475305,
+    -5389.285561609604,
+    -5280.854278151845,
+    -5279.51605104356,
+    -5278.617292462184,
+    -5278.462480609935,
+    -5278.433478905011
+  ],
+  "state_occupancy": {
+    "IDLE": 0.2539818173449733,
+    "LOAD_RISING": 0.14697511278754813,
+    "SUSTAINED_LOAD": 0.18492662561011353,
+    "THERMAL_RESPONSE": 0.15380601595324792,
+    "THERMAL_STEADY": 0.1769528827184338,
+    "COOLING": 0.08335754558568322
+  },
+  "recordings": [
+    {
+      "csv": "data/omen_20261112.csv",
+      "source_rows": 2943,
+      "resampled_seconds": 2978,
+      "missing_seconds": 38,
+      "duplicate_timestamps": 3,
+      "duration_seconds": 2977.0,
+      "start": "2026-11-12T19:29:09",
+      "end": "2026-11-12T20:18:46",
+      "workload_rows": {
+        "Idle": 874,
+        "Light": 52,
+        "Browsing": 145,
+        "Cinebench": 1210,
+        "FurMark": 659
+      },
+      "mode_rows": {
+        "Silent": 886,
+        "Balanced": 992,
+        "Turbo": 1062
+      },
+      "feature_missing_percent": {
+        "cpu_usage": 1.28,
+        "gpu_usage": 1.28,
+        "cpu_temp": 1.28,
+        "gpu_temp": 1.28,
+        "fan_rpm": 1.28,
+        "cpu_load_slope": 1.58,
+        "cpu_temp_slope": 1.58,
+        "gpu_temp_slope": 1.58,
+        "fan_rpm_slope": 1.58
+      },
+      "cpu_temp_c_unchanged_adjacent_pct": 96.93,
+      "gpu_temp_c_unchanged_adjacent_pct": 98.79
+    }
+  ]
+}

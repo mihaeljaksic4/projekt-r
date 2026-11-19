@@ -1,0 +1,1146 @@
+{
+  "guarded": {
+    "valid_samples": 2911,
+    "excluded_samples": 38,
+    "adjacent_pairs": 2874,
+    "observed_transitions": [
+      [
+        924,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        549,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        735,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        392,
+        2,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        169,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0,
+        98
+      ]
+    ],
+    "observed_state_changes": [
+      [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "state_change_count": 7,
+    "forbidden_map_changes": 0,
+    "runs": [
+      {
+        "state": "COOLING",
+        "start": "2026-11-12T19:29:38",
+        "end": "2026-11-12T19:31:16",
+        "seconds": 99.0,
+        "bridged_missing_seconds": 0,
+        "completed": false,
+        "left_censored": true,
+        "right_censored": false
+      },
+      {
+        "state": "IDLE",
+        "start": "2026-11-12T19:31:17",
+        "end": "2026-11-12T19:46:41",
+        "seconds": 925.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "LOAD_RISING",
+        "start": "2026-11-12T19:46:42",
+        "end": "2026-11-12T19:57:03",
+        "seconds": 622.0,
+        "bridged_missing_seconds": 37,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "SUSTAINED_LOAD",
+        "start": "2026-11-12T19:57:04",
+        "end": "2026-11-12T20:09:21",
+        "seconds": 738.0,
+        "bridged_missing_seconds": 1,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "THERMAL_RESPONSE",
+        "start": "2026-11-12T20:09:22",
+        "end": "2026-11-12T20:15:14",
+        "seconds": 353.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "THERMAL_STEADY",
+        "start": "2026-11-12T20:15:15",
+        "end": "2026-11-12T20:17:13",
+        "seconds": 119.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "THERMAL_RESPONSE",
+        "start": "2026-11-12T20:17:14",
+        "end": "2026-11-12T20:17:54",
+        "seconds": 41.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "THERMAL_STEADY",
+        "start": "2026-11-12T20:17:55",
+        "end": "2026-11-12T20:18:46",
+        "seconds": 52.0,
+        "bridged_missing_seconds": 0,
+        "completed": false,
+        "left_censored": false,
+        "right_censored": true
+      }
+    ],
+    "bridged_missing_seconds": 38,
+    "dwell": {
+      "IDLE": {
+        "runs": 1,
+        "completed_runs": 1,
+        "censored_runs": 0,
+        "observed_mean_seconds": 925.0,
+        "observed_median_seconds": 925.0,
+        "observed_p25_seconds": 925.0,
+        "observed_p75_seconds": 925.0,
+        "observed_max_seconds": 925.0,
+        "hmm_expected_seconds": 151.3865625425375
+      },
+      "LOAD_RISING": {
+        "runs": 1,
+        "completed_runs": 1,
+        "censored_runs": 0,
+        "observed_mean_seconds": 622.0,
+        "observed_median_seconds": 622.0,
+        "observed_p25_seconds": 622.0,
+        "observed_p75_seconds": 622.0,
+        "observed_max_seconds": 622.0,
+        "hmm_expected_seconds": 61.35655996639019
+      },
+      "SUSTAINED_LOAD": {
+        "runs": 1,
+        "completed_runs": 1,
+        "censored_runs": 0,
+        "observed_mean_seconds": 738.0,
+        "observed_median_seconds": 738.0,
+        "observed_p25_seconds": 738.0,
+        "observed_p75_seconds": 738.0,
+        "observed_max_seconds": 738.0,
+        "hmm_expected_seconds": 274.79475976758556
+      },
+      "THERMAL_RESPONSE": {
+        "runs": 2,
+        "completed_runs": 2,
+        "censored_runs": 0,
+        "observed_mean_seconds": 197.0,
+        "observed_median_seconds": 197.0,
+        "observed_p25_seconds": 119.0,
+        "observed_p75_seconds": 275.0,
+        "observed_max_seconds": 353.0,
+        "hmm_expected_seconds": 149.28436526090303
+      },
+      "THERMAL_STEADY": {
+        "runs": 2,
+        "completed_runs": 1,
+        "censored_runs": 1,
+        "observed_mean_seconds": 119.0,
+        "observed_median_seconds": 119.0,
+        "observed_p25_seconds": 119.0,
+        "observed_p75_seconds": 119.0,
+        "observed_max_seconds": 119.0,
+        "hmm_expected_seconds": 262.2870579532835
+      },
+      "COOLING": {
+        "runs": 1,
+        "completed_runs": 0,
+        "censored_runs": 1,
+        "observed_mean_seconds": null,
+        "observed_median_seconds": null,
+        "observed_p25_seconds": null,
+        "observed_p75_seconds": null,
+        "observed_max_seconds": null,
+        "hmm_expected_seconds": 41.3083097891593
+      }
+    }
+  },
+  "online_map": {
+    "valid_samples": 2911,
+    "excluded_samples": 38,
+    "adjacent_pairs": 2874,
+    "observed_transitions": [
+      [
+        758,
+        1,
+        0,
+        0,
+        0,
+        4
+      ],
+      [
+        1,
+        405,
+        3,
+        2,
+        1,
+        0
+      ],
+      [
+        0,
+        2,
+        546,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        3,
+        0,
+        448,
+        2,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        2,
+        479,
+        0
+      ],
+      [
+        4,
+        1,
+        0,
+        0,
+        0,
+        211
+      ]
+    ],
+    "observed_state_changes": [
+      [
+        0,
+        1,
+        0,
+        0,
+        0,
+        4
+      ],
+      [
+        1,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      [
+        0,
+        2,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        3,
+        0,
+        0,
+        2,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        2,
+        0,
+        0
+      ],
+      [
+        4,
+        1,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "state_change_count": 27,
+    "forbidden_map_changes": 12,
+    "runs": [
+      {
+        "state": "COOLING",
+        "start": "2026-11-12T19:29:38",
+        "end": "2026-11-12T19:31:16",
+        "seconds": 99.0,
+        "bridged_missing_seconds": 0,
+        "completed": false,
+        "left_censored": true,
+        "right_censored": false
+      },
+      {
+        "state": "IDLE",
+        "start": "2026-11-12T19:31:17",
+        "end": "2026-11-12T19:32:14",
+        "seconds": 58.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "COOLING",
+        "start": "2026-11-12T19:32:15",
+        "end": "2026-11-12T19:32:40",
+        "seconds": 26.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "IDLE",
+        "start": "2026-11-12T19:32:41",
+        "end": "2026-11-12T19:34:46",
+        "seconds": 126.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "COOLING",
+        "start": "2026-11-12T19:34:47",
+        "end": "2026-11-12T19:35:12",
+        "seconds": 26.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "IDLE",
+        "start": "2026-11-12T19:35:13",
+        "end": "2026-11-12T19:41:18",
+        "seconds": 366.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "LOAD_RISING",
+        "start": "2026-11-12T19:41:19",
+        "end": "2026-11-12T19:41:42",
+        "seconds": 24.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "IDLE",
+        "start": "2026-11-12T19:41:43",
+        "end": "2026-11-12T19:42:53",
+        "seconds": 71.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "COOLING",
+        "start": "2026-11-12T19:42:54",
+        "end": "2026-11-12T19:43:20",
+        "seconds": 27.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "IDLE",
+        "start": "2026-11-12T19:43:21",
+        "end": "2026-11-12T19:45:42",
+        "seconds": 142.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "COOLING",
+        "start": "2026-11-12T19:45:43",
+        "end": "2026-11-12T19:46:20",
+        "seconds": 38.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "LOAD_RISING",
+        "start": "2026-11-12T19:46:21",
+        "end": "2026-11-12T19:48:40",
+        "seconds": 140.0,
+        "bridged_missing_seconds": 18,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "THERMAL_STEADY",
+        "start": "2026-11-12T19:48:41",
+        "end": "2026-11-12T19:53:30",
+        "seconds": 290.0,
+        "bridged_missing_seconds": 9,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "THERMAL_RESPONSE",
+        "start": "2026-11-12T19:53:31",
+        "end": "2026-11-12T19:53:33",
+        "seconds": 3.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "LOAD_RISING",
+        "start": "2026-11-12T19:53:34",
+        "end": "2026-11-12T19:57:03",
+        "seconds": 210.0,
+        "bridged_missing_seconds": 10,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "SUSTAINED_LOAD",
+        "start": "2026-11-12T19:57:04",
+        "end": "2026-11-12T19:57:04",
+        "seconds": 1.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "LOAD_RISING",
+        "start": "2026-11-12T19:57:05",
+        "end": "2026-11-12T19:57:39",
+        "seconds": 35.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "SUSTAINED_LOAD",
+        "start": "2026-11-12T19:57:40",
+        "end": "2026-11-12T19:57:41",
+        "seconds": 2.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "LOAD_RISING",
+        "start": "2026-11-12T19:57:42",
+        "end": "2026-11-12T19:58:27",
+        "seconds": 46.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "SUSTAINED_LOAD",
+        "start": "2026-11-12T19:58:28",
+        "end": "2026-11-12T20:07:35",
+        "seconds": 548.0,
+        "bridged_missing_seconds": 1,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "THERMAL_RESPONSE",
+        "start": "2026-11-12T20:07:36",
+        "end": "2026-11-12T20:07:40",
+        "seconds": 5.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "LOAD_RISING",
+        "start": "2026-11-12T20:07:41",
+        "end": "2026-11-12T20:07:47",
+        "seconds": 7.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "THERMAL_RESPONSE",
+        "start": "2026-11-12T20:07:48",
+        "end": "2026-11-12T20:07:49",
+        "seconds": 2.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "LOAD_RISING",
+        "start": "2026-11-12T20:07:50",
+        "end": "2026-11-12T20:07:53",
+        "seconds": 4.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "THERMAL_RESPONSE",
+        "start": "2026-11-12T20:07:54",
+        "end": "2026-11-12T20:15:05",
+        "seconds": 432.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "THERMAL_STEADY",
+        "start": "2026-11-12T20:15:06",
+        "end": "2026-11-12T20:17:13",
+        "seconds": 128.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "THERMAL_RESPONSE",
+        "start": "2026-11-12T20:17:14",
+        "end": "2026-11-12T20:17:24",
+        "seconds": 11.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "THERMAL_STEADY",
+        "start": "2026-11-12T20:17:25",
+        "end": "2026-11-12T20:18:46",
+        "seconds": 82.0,
+        "bridged_missing_seconds": 0,
+        "completed": false,
+        "left_censored": false,
+        "right_censored": true
+      }
+    ],
+    "bridged_missing_seconds": 38,
+    "dwell": {
+      "IDLE": {
+        "runs": 5,
+        "completed_runs": 5,
+        "censored_runs": 0,
+        "observed_mean_seconds": 152.6,
+        "observed_median_seconds": 126.0,
+        "observed_p25_seconds": 71.0,
+        "observed_p75_seconds": 142.0,
+        "observed_max_seconds": 366.0,
+        "hmm_expected_seconds": 151.3865625425375
+      },
+      "LOAD_RISING": {
+        "runs": 7,
+        "completed_runs": 7,
+        "censored_runs": 0,
+        "observed_mean_seconds": 66.57142857142857,
+        "observed_median_seconds": 35.0,
+        "observed_p25_seconds": 15.5,
+        "observed_p75_seconds": 93.0,
+        "observed_max_seconds": 210.0,
+        "hmm_expected_seconds": 61.35655996639019
+      },
+      "SUSTAINED_LOAD": {
+        "runs": 3,
+        "completed_runs": 3,
+        "censored_runs": 0,
+        "observed_mean_seconds": 183.66666666666666,
+        "observed_median_seconds": 2.0,
+        "observed_p25_seconds": 1.5,
+        "observed_p75_seconds": 275.0,
+        "observed_max_seconds": 548.0,
+        "hmm_expected_seconds": 274.79475976758556
+      },
+      "THERMAL_RESPONSE": {
+        "runs": 5,
+        "completed_runs": 5,
+        "censored_runs": 0,
+        "observed_mean_seconds": 90.6,
+        "observed_median_seconds": 5.0,
+        "observed_p25_seconds": 3.0,
+        "observed_p75_seconds": 11.0,
+        "observed_max_seconds": 432.0,
+        "hmm_expected_seconds": 149.28436526090303
+      },
+      "THERMAL_STEADY": {
+        "runs": 3,
+        "completed_runs": 2,
+        "censored_runs": 1,
+        "observed_mean_seconds": 209.0,
+        "observed_median_seconds": 209.0,
+        "observed_p25_seconds": 168.5,
+        "observed_p75_seconds": 249.5,
+        "observed_max_seconds": 290.0,
+        "hmm_expected_seconds": 262.2870579532835
+      },
+      "COOLING": {
+        "runs": 5,
+        "completed_runs": 4,
+        "censored_runs": 1,
+        "observed_mean_seconds": 29.25,
+        "observed_median_seconds": 26.5,
+        "observed_p25_seconds": 26.0,
+        "observed_p75_seconds": 29.75,
+        "observed_max_seconds": 38.0,
+        "hmm_expected_seconds": 41.3083097891593
+      }
+    }
+  },
+  "viterbi": {
+    "valid_samples": 2911,
+    "excluded_samples": 38,
+    "adjacent_pairs": 2874,
+    "observed_transitions": [
+      [
+        751,
+        5,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        391,
+        1,
+        0,
+        0,
+        4
+      ],
+      [
+        0,
+        0,
+        547,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        455,
+        3,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        494,
+        1
+      ],
+      [
+        4,
+        2,
+        0,
+        0,
+        0,
+        213
+      ]
+    ],
+    "observed_state_changes": [
+      [
+        0,
+        5,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        1,
+        0,
+        0,
+        4
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        3,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        4,
+        2,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "state_change_count": 23,
+    "forbidden_map_changes": 0,
+    "runs": [
+      {
+        "state": "COOLING",
+        "start": "2026-11-12T19:29:38",
+        "end": "2026-11-12T19:31:15",
+        "seconds": 98.0,
+        "bridged_missing_seconds": 0,
+        "completed": false,
+        "left_censored": true,
+        "right_censored": false
+      },
+      {
+        "state": "IDLE",
+        "start": "2026-11-12T19:31:16",
+        "end": "2026-11-12T19:32:11",
+        "seconds": 56.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "LOAD_RISING",
+        "start": "2026-11-12T19:32:12",
+        "end": "2026-11-12T19:32:12",
+        "seconds": 1.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "COOLING",
+        "start": "2026-11-12T19:32:13",
+        "end": "2026-11-12T19:32:39",
+        "seconds": 27.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "IDLE",
+        "start": "2026-11-12T19:32:40",
+        "end": "2026-11-12T19:34:44",
+        "seconds": 125.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "LOAD_RISING",
+        "start": "2026-11-12T19:34:45",
+        "end": "2026-11-12T19:34:45",
+        "seconds": 1.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "COOLING",
+        "start": "2026-11-12T19:34:46",
+        "end": "2026-11-12T19:35:11",
+        "seconds": 26.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "IDLE",
+        "start": "2026-11-12T19:35:12",
+        "end": "2026-11-12T19:41:18",
+        "seconds": 367.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "LOAD_RISING",
+        "start": "2026-11-12T19:41:19",
+        "end": "2026-11-12T19:41:42",
+        "seconds": 24.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "IDLE",
+        "start": "2026-11-12T19:41:43",
+        "end": "2026-11-12T19:42:50",
+        "seconds": 68.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "LOAD_RISING",
+        "start": "2026-11-12T19:42:51",
+        "end": "2026-11-12T19:42:51",
+        "seconds": 1.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "COOLING",
+        "start": "2026-11-12T19:42:52",
+        "end": "2026-11-12T19:43:19",
+        "seconds": 28.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "IDLE",
+        "start": "2026-11-12T19:43:20",
+        "end": "2026-11-12T19:45:39",
+        "seconds": 140.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "LOAD_RISING",
+        "start": "2026-11-12T19:45:40",
+        "end": "2026-11-12T19:45:40",
+        "seconds": 1.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "COOLING",
+        "start": "2026-11-12T19:45:41",
+        "end": "2026-11-12T19:46:19",
+        "seconds": 39.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "LOAD_RISING",
+        "start": "2026-11-12T19:46:20",
+        "end": "2026-11-12T19:48:14",
+        "seconds": 115.0,
+        "bridged_missing_seconds": 11,
+        "completed": false,
+        "left_censored": false,
+        "right_censored": true
+      },
+      {
+        "state": "THERMAL_RESPONSE",
+        "start": "2026-11-12T19:48:16",
+        "end": "2026-11-12T19:48:16",
+        "seconds": 1.0,
+        "bridged_missing_seconds": 0,
+        "completed": false,
+        "left_censored": true,
+        "right_censored": false
+      },
+      {
+        "state": "THERMAL_STEADY",
+        "start": "2026-11-12T19:48:17",
+        "end": "2026-11-12T19:53:29",
+        "seconds": 313.0,
+        "bridged_missing_seconds": 15,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "COOLING",
+        "start": "2026-11-12T19:53:30",
+        "end": "2026-11-12T19:53:30",
+        "seconds": 1.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "LOAD_RISING",
+        "start": "2026-11-12T19:53:31",
+        "end": "2026-11-12T19:58:25",
+        "seconds": 295.0,
+        "bridged_missing_seconds": 10,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "SUSTAINED_LOAD",
+        "start": "2026-11-12T19:58:26",
+        "end": "2026-11-12T20:07:35",
+        "seconds": 550.0,
+        "bridged_missing_seconds": 1,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "THERMAL_RESPONSE",
+        "start": "2026-11-12T20:07:36",
+        "end": "2026-11-12T20:15:00",
+        "seconds": 445.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "THERMAL_STEADY",
+        "start": "2026-11-12T20:15:01",
+        "end": "2026-11-12T20:17:10",
+        "seconds": 130.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "THERMAL_RESPONSE",
+        "start": "2026-11-12T20:17:11",
+        "end": "2026-11-12T20:17:22",
+        "seconds": 12.0,
+        "bridged_missing_seconds": 0,
+        "completed": true,
+        "left_censored": false,
+        "right_censored": false
+      },
+      {
+        "state": "THERMAL_STEADY",
+        "start": "2026-11-12T20:17:23",
+        "end": "2026-11-12T20:18:46",
+        "seconds": 84.0,
+        "bridged_missing_seconds": 0,
+        "completed": false,
+        "left_censored": false,
+        "right_censored": true
+      }
+    ],
+    "bridged_missing_seconds": 37,
+    "dwell": {
+      "IDLE": {
+        "runs": 5,
+        "completed_runs": 5,
+        "censored_runs": 0,
+        "observed_mean_seconds": 151.2,
+        "observed_median_seconds": 125.0,
+        "observed_p25_seconds": 68.0,
+        "observed_p75_seconds": 140.0,
+        "observed_max_seconds": 367.0,
+        "hmm_expected_seconds": 151.3865625425375
+      },
+      "LOAD_RISING": {
+        "runs": 7,
+        "completed_runs": 6,
+        "censored_runs": 1,
+        "observed_mean_seconds": 53.833333333333336,
+        "observed_median_seconds": 1.0,
+        "observed_p25_seconds": 1.0,
+        "observed_p75_seconds": 18.25,
+        "observed_max_seconds": 295.0,
+        "hmm_expected_seconds": 61.35655996639019
+      },
+      "SUSTAINED_LOAD": {
+        "runs": 1,
+        "completed_runs": 1,
+        "censored_runs": 0,
+        "observed_mean_seconds": 550.0,
+        "observed_median_seconds": 550.0,
+        "observed_p25_seconds": 550.0,
+        "observed_p75_seconds": 550.0,
+        "observed_max_seconds": 550.0,
+        "hmm_expected_seconds": 274.79475976758556
+      },
+      "THERMAL_RESPONSE": {
+        "runs": 3,
+        "completed_runs": 2,
+        "censored_runs": 1,
+        "observed_mean_seconds": 228.5,
+        "observed_median_seconds": 228.5,
+        "observed_p25_seconds": 120.25,
+        "observed_p75_seconds": 336.75,
+        "observed_max_seconds": 445.0,
+        "hmm_expected_seconds": 149.28436526090303
+      },
+      "THERMAL_STEADY": {
+        "runs": 3,
+        "completed_runs": 2,
+        "censored_runs": 1,
+        "observed_mean_seconds": 221.5,
+        "observed_median_seconds": 221.5,
+        "observed_p25_seconds": 175.75,
+        "observed_p75_seconds": 267.25,
+        "observed_max_seconds": 313.0,
+        "hmm_expected_seconds": 262.2870579532835
+      },
+      "COOLING": {
+        "runs": 6,
+        "completed_runs": 5,
+        "censored_runs": 1,
+        "observed_mean_seconds": 24.2,
+        "observed_median_seconds": 27.0,
+        "observed_p25_seconds": 26.0,
+        "observed_p75_seconds": 28.0,
+        "observed_max_seconds": 39.0,
+        "hmm_expected_seconds": 41.3083097891593
+      }
+    }
+  }
+}

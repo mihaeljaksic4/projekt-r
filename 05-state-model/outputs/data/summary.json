@@ -1,0 +1,34 @@
+{
+  "source_rows": 2943,
+  "resampled_seconds": 2978,
+  "missing_seconds": 38,
+  "duplicate_timestamps": 3,
+  "duration_seconds": 2977.0,
+  "start": "2026-11-12T19:29:09",
+  "end": "2026-11-12T20:18:46",
+  "workload_rows": {
+    "Idle": 874,
+    "Light": 52,
+    "Browsing": 145,
+    "Cinebench": 1210,
+    "FurMark": 659
+  },
+  "mode_rows": {
+    "Silent": 886,
+    "Balanced": 992,
+    "Turbo": 1062
+  },
+  "feature_missing_percent": {
+    "cpu_usage": 1.28,
+    "gpu_usage": 1.28,
+    "cpu_temp": 1.28,
+    "gpu_temp": 1.28,
+    "fan_rpm": 1.28,
+    "cpu_load_slope": 1.58,
+    "cpu_temp_slope": 1.58,
+    "gpu_temp_slope": 1.58,
+    "fan_rpm_slope": 1.58
+  },
+  "cpu_temp_c_unchanged_adjacent_pct": 96.93,
+  "gpu_temp_c_unchanged_adjacent_pct": 98.79
+}

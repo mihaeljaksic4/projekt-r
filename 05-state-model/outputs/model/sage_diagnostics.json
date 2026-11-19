@@ -1,0 +1,1117 @@
+{
+  "topology": {
+    "simple_cycles": [
+      [
+        "IDLE",
+        "LOAD_RISING",
+        "IDLE"
+      ],
+      [
+        "LOAD_RISING",
+        "COOLING",
+        "LOAD_RISING"
+      ],
+      [
+        "SUSTAINED_LOAD",
+        "THERMAL_RESPONSE",
+        "SUSTAINED_LOAD"
+      ],
+      [
+        "THERMAL_RESPONSE",
+        "THERMAL_STEADY",
+        "THERMAL_RESPONSE"
+      ],
+      [
+        "IDLE",
+        "LOAD_RISING",
+        "COOLING",
+        "IDLE"
+      ],
+      [
+        "LOAD_RISING",
+        "SUSTAINED_LOAD",
+        "COOLING",
+        "LOAD_RISING"
+      ],
+      [
+        "SUSTAINED_LOAD",
+        "THERMAL_RESPONSE",
+        "THERMAL_STEADY",
+        "SUSTAINED_LOAD"
+      ],
+      [
+        "IDLE",
+        "LOAD_RISING",
+        "SUSTAINED_LOAD",
+        "COOLING",
+        "IDLE"
+      ],
+      [
+        "LOAD_RISING",
+        "SUSTAINED_LOAD",
+        "THERMAL_RESPONSE",
+        "COOLING",
+        "LOAD_RISING"
+      ],
+      [
+        "IDLE",
+        "LOAD_RISING",
+        "SUSTAINED_LOAD",
+        "THERMAL_RESPONSE",
+        "COOLING",
+        "IDLE"
+      ],
+      [
+        "LOAD_RISING",
+        "SUSTAINED_LOAD",
+        "THERMAL_RESPONSE",
+        "THERMAL_STEADY",
+        "COOLING",
+        "LOAD_RISING"
+      ],
+      [
+        "IDLE",
+        "LOAD_RISING",
+        "SUSTAINED_LOAD",
+        "THERMAL_RESPONSE",
+        "THERMAL_STEADY",
+        "COOLING",
+        "IDLE"
+      ]
+    ],
+    "strongly_connected": true,
+    "components": [
+      [
+        "IDLE",
+        "LOAD_RISING",
+        "SUSTAINED_LOAD",
+        "THERMAL_RESPONSE",
+        "THERMAL_STEADY",
+        "COOLING"
+      ]
+    ],
+    "allowed_edges": 20,
+    "out_degree": {
+      "IDLE": 2,
+      "LOAD_RISING": 4,
+      "SUSTAINED_LOAD": 3,
+      "THERMAL_RESPONSE": 4,
+      "THERMAL_STEADY": 4,
+      "COOLING": 3
+    },
+    "shortest_allowed_paths_steps": [
+      [
+        0,
+        1,
+        2,
+        3,
+        4,
+        2
+      ],
+      [
+        1,
+        0,
+        1,
+        2,
+        3,
+        1
+      ],
+      [
+        2,
+        2,
+        0,
+        1,
+        2,
+        1
+      ],
+      [
+        2,
+        2,
+        1,
+        0,
+        1,
+        1
+      ],
+      [
+        2,
+        2,
+        1,
+        1,
+        0,
+        1
+      ],
+      [
+        1,
+        1,
+        2,
+        3,
+        4,
+        0
+      ]
+    ]
+  },
+  "markov_chain": {
+    "stationary_probabilities": {
+      "IDLE": 0.2085931128549915,
+      "LOAD_RISING": 0.11834060472486407,
+      "SUSTAINED_LOAD": 0.15570424445445158,
+      "THERMAL_RESPONSE": 0.16498119321895488,
+      "THERMAL_STEADY": 0.2842381874354941,
+      "COOLING": 0.06814265731124385
+    },
+    "stationary_tree_weights": {
+      "IDLE": 1.3064334460142172e-11,
+      "LOAD_RISING": 7.411755926073517e-12,
+      "SUSTAINED_LOAD": 9.751867156950652e-12,
+      "THERMAL_RESPONSE": 1.0332889031404038e-11,
+      "THERMAL_STEADY": 1.7802039080663813e-11,
+      "COOLING": 4.267822910988498e-12
+    },
+    "characteristic_polynomial_coefficients_ascending": [
+      0.9400158004544075,
+      -5.698812098579686,
+      14.395079227291344,
+      -19.392523053264892,
+      14.694977816639826,
+      -5.938737692541,
+      1.0
+    ],
+    "expected_dwell_seconds": {
+      "IDLE": 151.3865625425375,
+      "LOAD_RISING": 61.35655996639019,
+      "SUSTAINED_LOAD": 274.79475976758556,
+      "THERMAL_RESPONSE": 149.28436526090303,
+      "THERMAL_STEADY": 262.2870579532835,
+      "COOLING": 41.3083097891593
+    },
+    "expected_hitting_seconds": [
+      [
+        0.0,
+        151.38656255323883,
+        723.4046672417792,
+        1001.8941549794806,
+        1166.7177641126978,
+        615.4473478121945
+      ],
+      [
+        574.3639690977215,
+        0.0,
+        572.0181046885403,
+        850.5075924262418,
+        1015.3312015594589,
+        464.0607852589556
+      ],
+      [
+        1326.5963040185486,
+        1235.63417144766,
+        0.0,
+        278.4894877377015,
+        443.31309687091857,
+        1093.4915678166658
+      ],
+      [
+        1054.8601875604659,
+        963.8980549895774,
+        1492.9547735325334,
+        0.0,
+        164.82360913321708,
+        821.7554513585831
+      ],
+      [
+        908.0650056372646,
+        817.1028730663761,
+        1363.2038616468824,
+        757.9484515472906,
+        0.0,
+        674.9602694353817
+      ],
+      [
+        233.10473620188284,
+        142.14260363099436,
+        714.1607083195347,
+        992.6501960572361,
+        1157.4738051904533,
+        0.0
+      ]
+    ],
+    "transition_entropy_nats": {
+      "IDLE": 0.0397428039968931,
+      "LOAD_RISING": 0.09888975274235934,
+      "SUSTAINED_LOAD": 0.024158893232266245,
+      "THERMAL_RESPONSE": 0.04094002120414008,
+      "THERMAL_STEADY": 0.02774181381771331,
+      "COOLING": 0.12941189219962326
+    },
+    "entropy_rate_nats_per_step": 0.04721247720405328,
+    "eigenvalues": [
+      {
+        "real": 1.0000000000000004,
+        "imag": 3.3900464665525272e-16
+      },
+      {
+        "real": 0.996872549608702,
+        "imag": 0.001860461348033615
+      },
+      {
+        "real": 0.9968725496087016,
+        "imag": -0.0018604613480335684
+      },
+      {
+        "real": 0.9906107315893928,
+        "imag": -1.692242076492559e-16
+      },
+      {
+        "real": 0.9812564908420554,
+        "imag": 5.5429013643997383e-17
+      },
+      {
+        "real": 0.9731253708921872,
+        "imag": 1.0782390605368342e-16
+      }
+    ],
+    "spectral_gap": 0.003125714305067695,
+    "relaxation_seconds": 319.4266109924337,
+    "kemeny_seconds": 669.410007910351,
+    "kemeny_source_spread_seconds": 0.0,
+    "stationary_offdiagonal_flow_per_hour": [
+      [
+        0.0,
+        4.9603821743885455,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        1.0048486075890966,
+        0.0,
+        1.9915334643578688,
+        0.0,
+        0.0,
+        3.947067450693775
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        2.032240064707936,
+        0.0,
+        0.007592428859728327
+      ],
+      [
+        0.0,
+        0.0,
+        0.038620817279426074,
+        0.0,
+        3.9012884690324587,
+        0.038620511836956466
+      ],
+      [
+        0.0,
+        0.0,
+        0.009678211560465794,
+        1.9462897339717162,
+        0.0,
+        1.945320523493432
+      ],
+      [
+        3.955533566458243,
+        1.9830673487710822,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "stationary_entries_per_hour": {
+      "IDLE": 4.960382174047339,
+      "LOAD_RISING": 6.943449523159628,
+      "SUSTAINED_LOAD": 2.0398324931977605,
+      "THERMAL_RESPONSE": 3.978529798679652,
+      "THERMAL_STEADY": 3.9012884690324587,
+      "COOLING": 5.938600914883891
+    },
+    "worst_case_convergence": [
+      {
+        "seconds": 0.0,
+        "worst_total_variation": 0.9318573426887562
+      },
+      {
+        "seconds": 30.0,
+        "worst_total_variation": 0.740786026616684
+      },
+      {
+        "seconds": 60.0,
+        "worst_total_variation": 0.6481696519982627
+      },
+      {
+        "seconds": 120.0,
+        "worst_total_variation": 0.5694901890109488
+      },
+      {
+        "seconds": 300.0,
+        "worst_total_variation": 0.34210464184513095
+      },
+      {
+        "seconds": 600.0,
+        "worst_total_variation": 0.16425145388411003
+      },
+      {
+        "seconds": 1200.0,
+        "worst_total_variation": 0.033861554838137416
+      },
+      {
+        "seconds": 2400.0,
+        "worst_total_variation": 0.0006954384762312207
+      }
+    ],
+    "slow_modes": [
+      {
+        "eigenvalue": {
+          "real": 0.996872549608702,
+          "imag": 0.001860461348033615
+        },
+        "amplitude": {
+          "IDLE": 0.4765655646101472,
+          "LOAD_RISING": 0.2766311042534035,
+          "SUSTAINED_LOAD": 0.6575045713769475,
+          "THERMAL_RESPONSE": 0.3018336458466525,
+          "THERMAL_STEADY": 1.0,
+          "COOLING": 0.08359954443336609
+        },
+        "timescale_seconds": 319.4266109924337
+      },
+      {
+        "eigenvalue": {
+          "real": 0.9906107315893928,
+          "imag": -1.692242076492559e-16
+        },
+        "amplitude": {
+          "IDLE": 0.18622826619573454,
+          "LOAD_RISING": 0.11991227111892748,
+          "SUSTAINED_LOAD": 0.10543977440713119,
+          "THERMAL_RESPONSE": 0.8489896652730157,
+          "THERMAL_STEADY": 1.0,
+          "COOLING": 0.04969042818053245
+        },
+        "timescale_seconds": 106.00378443164414
+      },
+      {
+        "eigenvalue": {
+          "real": 0.9812564908420554,
+          "imag": 5.5429013643997383e-17
+        },
+        "amplitude": {
+          "IDLE": 1.0,
+          "LOAD_RISING": 0.412076821301136,
+          "SUSTAINED_LOAD": 0.1277002183640151,
+          "THERMAL_RESPONSE": 0.04130772637792771,
+          "THERMAL_STEADY": 0.018172582339234102,
+          "COOLING": 0.6924882530240437
+        },
+        "timescale_seconds": 52.85022579309302
+      }
+    ],
+    "first_passage": {
+      "thermal": {
+        "targets": [
+          "THERMAL_RESPONSE",
+          "THERMAL_STEADY"
+        ],
+        "horizons_seconds": [
+          0,
+          10,
+          30,
+          60,
+          120,
+          300,
+          600,
+          1200
+        ],
+        "probability_by_start": {
+          "IDLE": [
+            0.0,
+            1.2827063976317277e-05,
+            0.0003818841620183422,
+            0.0026861678597673855,
+            0.015880152356454458,
+            0.11383717767840518,
+            0.3455329287968282,
+            0.7020654530627982
+          ],
+          "LOAD_RISING": [
+            0.0,
+            0.0007236053421614264,
+            0.006178237731974345,
+            0.02123832620527044,
+            0.06437931740324232,
+            0.22076938582454264,
+            0.46117739456769624,
+            0.7651402499429472
+          ],
+          "SUSTAINED_LOAD": [
+            0.0,
+            0.03566735916871622,
+            0.10321709354018005,
+            0.1957411672550874,
+            0.3530310369958365,
+            0.6626815824450395,
+            0.8851671614027544,
+            0.9858125242663225
+          ],
+          "THERMAL_RESPONSE": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "THERMAL_STEADY": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "COOLING": [
+            0.0,
+            1.5577665471777635e-05,
+            0.00045451375686456075,
+            0.003115315023914045,
+            0.01771203536141719,
+            0.11976988363989882,
+            0.3527019216107278,
+            0.7061274943617573
+          ]
+        },
+        "mean_seconds_by_start": {
+          "IDLE": 1001.8941549794806,
+          "LOAD_RISING": 850.5075924262418,
+          "SUSTAINED_LOAD": 278.4894877377015,
+          "THERMAL_RESPONSE": 0.0,
+          "THERMAL_STEADY": 0.0,
+          "COOLING": 992.6501960572361
+        },
+        "std_seconds_by_start": {
+          "IDLE": 732.9366488255837,
+          "LOAD_RISING": 717.2374965327347,
+          "SUSTAINED_LOAD": 284.40754189450973,
+          "THERMAL_RESPONSE": 0.0,
+          "THERMAL_STEADY": 0.0,
+          "COOLING": 732.3634478429068
+        }
+      },
+      "idle": {
+        "targets": [
+          "IDLE"
+        ],
+        "horizons_seconds": [
+          0,
+          10,
+          30,
+          60,
+          120,
+          300,
+          600,
+          1200
+        ],
+        "probability_by_start": {
+          "IDLE": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "LOAD_RISING": [
+            0.0,
+            0.02798541340620675,
+            0.10187870422254808,
+            0.22140880669744,
+            0.4100946747102491,
+            0.6204180348331273,
+            0.7027666845466246,
+            0.8295978690831174
+          ],
+          "SUSTAINED_LOAD": [
+            0.0,
+            9.737892464944942e-06,
+            0.00010404044393452772,
+            0.0005681212801205149,
+            0.003913680335092096,
+            0.04815764882338247,
+            0.21511532299985703,
+            0.5612966006563133
+          ],
+          "THERMAL_RESPONSE": [
+            0.0,
+            6.641103381177516e-05,
+            0.0010070309398414468,
+            0.005529520607672422,
+            0.027197970666849147,
+            0.1554151910646151,
+            0.3896353869541609,
+            0.6869303160031404
+          ],
+          "THERMAL_STEADY": [
+            0.0,
+            0.0012854690148758063,
+            0.010532016308128056,
+            0.034318292221608204,
+            0.09548619036176009,
+            0.27533147327662233,
+            0.49074288986078707,
+            0.7379898742998219
+          ],
+          "COOLING": [
+            0.0,
+            0.14566561454056937,
+            0.35568348780840675,
+            0.5463643177263244,
+            0.7268848902863858,
+            0.8629383042875876,
+            0.8975935923227115,
+            0.9405851414246934
+          ]
+        },
+        "mean_seconds_by_start": {
+          "IDLE": 0.0,
+          "LOAD_RISING": 574.3639690977215,
+          "SUSTAINED_LOAD": 1326.5963040185486,
+          "THERMAL_RESPONSE": 1054.8601875604659,
+          "THERMAL_STEADY": 908.0650056372646,
+          "COOLING": 233.10473620188284
+        },
+        "std_seconds_by_start": {
+          "IDLE": 0.0,
+          "LOAD_RISING": 847.5343350360448,
+          "SUSTAINED_LOAD": 957.7949266555174,
+          "THERMAL_RESPONSE": 917.3821549711589,
+          "THERMAL_STEADY": 904.013949590943,
+          "COOLING": 561.164620990894
+        }
+      }
+    },
+    "thermal_before_idle_committor": {
+      "IDLE": 0.0,
+      "LOAD_RISING": 0.3528620393015481,
+      "SUSTAINED_LOAD": 0.9967164910558648,
+      "THERMAL_RESPONSE": 1.0,
+      "THERMAL_STEADY": 1.0,
+      "COOLING": 0.11783064710822187
+    },
+    "stationary_currents_per_hour": [
+      [
+        0.0,
+        3.955533566799449,
+        0.0,
+        0.0,
+        0.0,
+        -3.955533566458243
+      ],
+      [
+        -3.955533566799449,
+        0.0,
+        1.9915334643578688,
+        0.0,
+        0.0,
+        1.9640001019226927
+      ],
+      [
+        0.0,
+        -1.9915334643578688,
+        0.0,
+        1.9936192474285102,
+        -0.009678211560465794,
+        0.007592428859728327
+      ],
+      [
+        0.0,
+        0.0,
+        -1.9936192474285102,
+        0.0,
+        1.9549987350607425,
+        0.038620511836956466
+      ],
+      [
+        0.0,
+        0.0,
+        0.009678211560465794,
+        -1.9549987350607425,
+        0.0,
+        1.945320523493432
+      ],
+      [
+        3.955533566458243,
+        -1.9640001019226927,
+        -0.007592428859728327,
+        -0.038620511836956466,
+        -1.945320523493432,
+        0.0
+      ]
+    ],
+    "stationary_sensitivity": [
+      {
+        "edge": [
+          "IDLE",
+          "LOAD_RISING"
+        ],
+        "delta_transition_probability": 0.0001,
+        "delta_stationary_probability": {
+          "IDLE": -0.0024991200474305405,
+          "LOAD_RISING": 0.00037369826128234304,
+          "SUSTAINED_LOAD": 0.0004916858888983195,
+          "THERMAL_RESPONSE": 0.0005209808179833986,
+          "THERMAL_STEADY": 0.0008975728718105119,
+          "COOLING": 0.00021518220745596765
+        }
+      },
+      {
+        "edge": [
+          "LOAD_RISING",
+          "IDLE"
+        ],
+        "delta_transition_probability": 0.0001,
+        "delta_stationary_probability": {
+          "IDLE": 0.0014178194746945314,
+          "LOAD_RISING": -0.0002120092922508227,
+          "SUSTAINED_LOAD": -0.0002789469155070289,
+          "THERMAL_RESPONSE": -0.00029556673375438536,
+          "THERMAL_STEADY": -0.0005092177540326069,
+          "COOLING": -0.0001220787791496876
+        }
+      },
+      {
+        "edge": [
+          "LOAD_RISING",
+          "SUSTAINED_LOAD"
+        ],
+        "delta_transition_probability": 0.0001,
+        "delta_stationary_probability": {
+          "IDLE": -0.0018568881603438989,
+          "LOAD_RISING": -0.0017304437180639684,
+          "SUSTAINED_LOAD": 0.001054008250309078,
+          "THERMAL_RESPONSE": 0.0011168066702862643,
+          "THERMAL_STEADY": 0.0019240926646514659,
+          "COOLING": -0.0005075757068389408
+        }
+      },
+      {
+        "edge": [
+          "LOAD_RISING",
+          "COOLING"
+        ],
+        "delta_transition_probability": 0.0001,
+        "delta_stationary_probability": {
+          "IDLE": 0.0008423996147932395,
+          "LOAD_RISING": -0.00019906359115524815,
+          "SUSTAINED_LOAD": -0.0002619138725146764,
+          "THERMAL_RESPONSE": -0.0002775188522282647,
+          "THERMAL_STEADY": -0.0004781239242939232,
+          "COOLING": 0.000374220625398873
+        }
+      },
+      {
+        "edge": [
+          "SUSTAINED_LOAD",
+          "THERMAL_RESPONSE"
+        ],
+        "delta_transition_probability": 0.0001,
+        "delta_stationary_probability": {
+          "IDLE": 0.0008825671956154154,
+          "LOAD_RISING": 0.0005007046215953549,
+          "SUSTAINED_LOAD": -0.0036194914467546527,
+          "THERMAL_RESPONSE": 0.0007153913721105654,
+          "THERMAL_STEADY": 0.001232513494103739,
+          "COOLING": 0.00028831476332957773
+        }
+      },
+      {
+        "edge": [
+          "SUSTAINED_LOAD",
+          "COOLING"
+        ],
+        "delta_transition_probability": 0.0001,
+        "delta_stationary_probability": {
+          "IDLE": 0.003551533005683215,
+          "LOAD_RISING": 0.0020148822645215557,
+          "SUSTAINED_LOAD": -0.0017313977765412007,
+          "THERMAL_RESPONSE": -0.0018345554555127994,
+          "THERMAL_STEADY": -0.003160667632781706,
+          "COOLING": 0.001160205594630935
+        }
+      },
+      {
+        "edge": [
+          "THERMAL_RESPONSE",
+          "SUSTAINED_LOAD"
+        ],
+        "delta_transition_probability": 0.0001,
+        "delta_stationary_probability": {
+          "IDLE": -0.0009351510585900094,
+          "LOAD_RISING": -0.0005305368919805654,
+          "SUSTAINED_LOAD": 0.0038351428364951775,
+          "THERMAL_RESPONSE": -0.0007580148030188914,
+          "THERMAL_STEADY": -0.0013059473595479411,
+          "COOLING": -0.00030549272335776966
+        }
+      },
+      {
+        "edge": [
+          "THERMAL_RESPONSE",
+          "THERMAL_STEADY"
+        ],
+        "delta_transition_probability": 0.0001,
+        "delta_stationary_probability": {
+          "IDLE": 0.0005051800679302433,
+          "LOAD_RISING": 0.0002866025340701095,
+          "SUSTAINED_LOAD": 0.00033330767218725,
+          "THERMAL_RESPONSE": -0.0020630442853168903,
+          "THERMAL_STEADY": 0.0007729230962621588,
+          "COOLING": 0.00016503091486712863
+        }
+      },
+      {
+        "edge": [
+          "THERMAL_RESPONSE",
+          "COOLING"
+        ],
+        "delta_transition_probability": 0.0001,
+        "delta_stationary_probability": {
+          "IDLE": 0.002827984333685844,
+          "LOAD_RISING": 0.0016043932209472097,
+          "SUSTAINED_LOAD": 0.0020005873809823774,
+          "THERMAL_RESPONSE": -0.002701874131563944,
+          "THERMAL_STEADY": -0.004654929394378702,
+          "COOLING": 0.0009238385903272139
+        }
+      },
+      {
+        "edge": [
+          "THERMAL_STEADY",
+          "SUSTAINED_LOAD"
+        ],
+        "delta_transition_probability": 0.0001,
+        "delta_stationary_probability": {
+          "IDLE": -0.0024814774382538765,
+          "LOAD_RISING": -0.0014078103377181718,
+          "SUSTAINED_LOAD": 0.0060331439019220496,
+          "THERMAL_RESPONSE": 0.0022483727227379925,
+          "THERMAL_STEADY": -0.003581586232610504,
+          "COOLING": -0.0008106426160774889
+        }
+      },
+      {
+        "edge": [
+          "THERMAL_STEADY",
+          "THERMAL_RESPONSE"
+        ],
+        "delta_transition_probability": 0.0001,
+        "delta_stationary_probability": {
+          "IDLE": -0.000870350517143276,
+          "LOAD_RISING": -0.0004937737642034944,
+          "SUSTAINED_LOAD": -0.000574239807291945,
+          "THERMAL_RESPONSE": 0.0035543200822859334,
+          "THERMAL_STEADY": -0.0013316321431680919,
+          "COOLING": -0.00028432385047912637
+        }
+      },
+      {
+        "edge": [
+          "THERMAL_STEADY",
+          "COOLING"
+        ],
+        "delta_transition_probability": 0.0001,
+        "delta_stationary_probability": {
+          "IDLE": 0.00400184809785914,
+          "LOAD_RISING": 0.002270358390245218,
+          "SUSTAINED_LOAD": 0.0028724762691403434,
+          "THERMAL_RESPONSE": -0.0011006093120927679,
+          "THERMAL_STEADY": -0.009351386806612913,
+          "COOLING": 0.0013073133614609797
+        }
+      },
+      {
+        "edge": [
+          "COOLING",
+          "IDLE"
+        ],
+        "delta_transition_probability": 0.0001,
+        "delta_stationary_probability": {
+          "IDLE": 0.0003313371468271642,
+          "LOAD_RISING": -7.4543684769948094e-06,
+          "SUSTAINED_LOAD": -9.807933754386947e-06,
+          "THERMAL_RESPONSE": -1.03922961090799e-05,
+          "THERMAL_STEADY": -1.7904388686397457e-05,
+          "COOLING": -0.0002857781598003051
+        }
+      },
+      {
+        "edge": [
+          "COOLING",
+          "LOAD_RISING"
+        ],
+        "delta_transition_probability": 0.0001,
+        "delta_stationary_probability": {
+          "IDLE": -0.00048506891107612157,
+          "LOAD_RISING": 0.00011462441067269278,
+          "SUSTAINED_LOAD": 0.0001508147376914539,
+          "THERMAL_RESPONSE": 0.00015980036682056162,
+          "THERMAL_STEADY": 0.0002753123900390423,
+          "COOLING": -0.00021548299414762901
+        }
+      }
+    ],
+    "first_exit_probability_30s": {
+      "IDLE": 0.1803071564468237,
+      "LOAD_RISING": 0.38919258184787087,
+      "SUSTAINED_LOAD": 0.10360266875821811,
+      "THERMAL_RESPONSE": 0.18260665406389487,
+      "THERMAL_STEADY": 0.10827464829817024,
+      "COOLING": 0.5205814100165371
+    }
+  },
+  "emissions": {
+    "bhattacharyya_distance": [
+      [
+        0.0,
+        7.31676638612369,
+        23.377114532150788,
+        16.45988497224862,
+        22.32558546877863,
+        1.1701244708693428
+      ],
+      [
+        7.31676638612369,
+        0.0,
+        4.996139341737972,
+        10.319995330339562,
+        5.485791198286324,
+        6.505500199702409
+      ],
+      [
+        23.377114532150788,
+        4.996139341737972,
+        0.0,
+        26.8227649812193,
+        28.34606037279543,
+        23.089271927939592
+      ],
+      [
+        16.45988497224862,
+        10.319995330339562,
+        26.8227649812193,
+        0.0,
+        5.757439984391872,
+        15.350016388476728
+      ],
+      [
+        22.32558546877863,
+        5.485791198286324,
+        28.34606037279543,
+        5.757439984391872,
+        0.0,
+        19.626701836280873
+      ],
+      [
+        1.1701244708693428,
+        6.505500199702409,
+        23.089271927939592,
+        15.350016388476728,
+        19.626701836280873,
+        0.0
+      ]
+    ],
+    "adjacent_pair_feature_contributions": [
+      {
+        "states": [
+          "IDLE",
+          "LOAD_RISING"
+        ],
+        "distance": 7.31676638612369,
+        "contributions": {
+          "cpu_usage": 1.4027419322344465,
+          "gpu_usage": 8.428898400001952e-05,
+          "cpu_temp": 1.0963563458822718,
+          "gpu_temp": 0.5477285652240987,
+          "fan_rpm": 0.6967424362607624,
+          "cpu_load_slope": 0.9299092713424271,
+          "cpu_temp_slope": 1.0535994071017851,
+          "gpu_temp_slope": 0.5754210849294146,
+          "fan_rpm_slope": 1.0141830541644838
+        }
+      },
+      {
+        "states": [
+          "IDLE",
+          "COOLING"
+        ],
+        "distance": 1.1701244708693428,
+        "contributions": {
+          "cpu_usage": 0.0007526122828992894,
+          "gpu_usage": 3.417831441406144e-16,
+          "cpu_temp": 0.0236460788069194,
+          "gpu_temp": 0.2936589019468487,
+          "fan_rpm": 0.0026773424725325093,
+          "cpu_load_slope": 0.047015325651157035,
+          "cpu_temp_slope": 0.03664466290737996,
+          "gpu_temp_slope": 0.7597694588568262,
+          "fan_rpm_slope": 0.005960087944779424
+        }
+      },
+      {
+        "states": [
+          "LOAD_RISING",
+          "SUSTAINED_LOAD"
+        ],
+        "distance": 4.996139341737972,
+        "contributions": {
+          "cpu_usage": 0.5201072312132057,
+          "gpu_usage": 5.790927624858005e-05,
+          "cpu_temp": 0.7386324308548269,
+          "gpu_temp": 0.33304650317637907,
+          "fan_rpm": 0.9566245672297153,
+          "cpu_load_slope": 0.9299873111319816,
+          "cpu_temp_slope": 0.8905166299194472,
+          "gpu_temp_slope": 0.030436475441237357,
+          "fan_rpm_slope": 0.5967302834949301
+        }
+      },
+      {
+        "states": [
+          "LOAD_RISING",
+          "COOLING"
+        ],
+        "distance": 6.505500199702409,
+        "contributions": {
+          "cpu_usage": 1.388843270520036,
+          "gpu_usage": 8.428864453870534e-05,
+          "cpu_temp": 0.9954849435998523,
+          "gpu_temp": 0.8753334826354997,
+          "fan_rpm": 0.6429544377958594,
+          "cpu_load_slope": 0.7433425928968105,
+          "cpu_temp_slope": 0.8640801574683793,
+          "gpu_temp_slope": 0.03567566114203619,
+          "fan_rpm_slope": 0.9597013649993966
+        }
+      },
+      {
+        "states": [
+          "SUSTAINED_LOAD",
+          "THERMAL_RESPONSE"
+        ],
+        "distance": 26.8227649812193,
+        "contributions": {
+          "cpu_usage": 16.79398501358501,
+          "gpu_usage": 5.995779721992209,
+          "cpu_temp": 0.9564341488941481,
+          "gpu_temp": 1.1071199762877106,
+          "fan_rpm": 0.6901169415427049,
+          "cpu_load_slope": 0.8223988530736676,
+          "cpu_temp_slope": 0.07831461446287633,
+          "gpu_temp_slope": 0.1477495074211664,
+          "fan_rpm_slope": 0.2308662039598049
+        }
+      },
+      {
+        "states": [
+          "SUSTAINED_LOAD",
+          "THERMAL_STEADY"
+        ],
+        "distance": 28.34606037279543,
+        "contributions": {
+          "cpu_usage": 0.713920363446745,
+          "gpu_usage": 0.846471167927196,
+          "cpu_temp": 3.5713435283402526,
+          "gpu_temp": 0.4056988987356219,
+          "fan_rpm": 22.572294677610046,
+          "cpu_load_slope": 0.001131727389747695,
+          "cpu_temp_slope": 0.010883934649091176,
+          "gpu_temp_slope": 0.05597535913309263,
+          "fan_rpm_slope": 0.1683407155636388
+        }
+      },
+      {
+        "states": [
+          "SUSTAINED_LOAD",
+          "COOLING"
+        ],
+        "distance": 23.089271927939592,
+        "contributions": {
+          "cpu_usage": 16.977181539447354,
+          "gpu_usage": 2.4682617851929858e-06,
+          "cpu_temp": 2.3160843884920297,
+          "gpu_temp": 3.4269986543455193,
+          "fan_rpm": 0.07888489395984358,
+          "cpu_load_slope": 0.04580903190991374,
+          "cpu_temp_slope": 0.000785998445137506,
+          "gpu_temp_slope": 0.10841638405088969,
+          "fan_rpm_slope": 0.13510856902711835
+        }
+      },
+      {
+        "states": [
+          "THERMAL_RESPONSE",
+          "THERMAL_STEADY"
+        ],
+        "distance": 5.757439984391872,
+        "contributions": {
+          "cpu_usage": 0.9670752693774343,
+          "gpu_usage": 0.4649742733626089,
+          "cpu_temp": 0.9869086816275715,
+          "gpu_temp": 0.1737254123645528,
+          "fan_rpm": 1.608051148581929,
+          "cpu_load_slope": 0.8212079051421151,
+          "cpu_temp_slope": 0.11647559759881779,
+          "gpu_temp_slope": 0.02705400776621921,
+          "fan_rpm_slope": 0.5919676885706234
+        }
+      },
+      {
+        "states": [
+          "THERMAL_RESPONSE",
+          "COOLING"
+        ],
+        "distance": 15.350016388476728,
+        "contributions": {
+          "cpu_usage": 0.0004968915411395514,
+          "gpu_usage": 5.999282761718531,
+          "cpu_temp": 3.682528039901574,
+          "gpu_temp": 4.02307222173127,
+          "fan_rpm": 0.39734302131545857,
+          "cpu_load_slope": 0.6321369181250243,
+          "cpu_temp_slope": 0.06837302649449963,
+          "gpu_temp_slope": 0.010273983849290453,
+          "fan_rpm_slope": 0.5365095237999404
+        }
+      },
+      {
+        "states": [
+          "THERMAL_STEADY",
+          "COOLING"
+        ],
+        "distance": 19.626701836280873,
+        "contributions": {
+          "cpu_usage": 0.971744122733462,
+          "gpu_usage": 0.8467170787697449,
+          "cpu_temp": 6.748841780603755,
+          "gpu_temp": 1.190732738827137,
+          "fan_rpm": 9.794993316668165,
+          "cpu_load_slope": 0.04118566834039326,
+          "cpu_temp_slope": 0.0172191660713389,
+          "gpu_temp_slope": 0.010780861973363195,
+          "fan_rpm_slope": 0.0044871022935152405
+        }
+      }
+    ]
+  }
+}
